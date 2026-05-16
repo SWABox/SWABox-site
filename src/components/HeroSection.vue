@@ -14,12 +14,12 @@ function scrollTo(id) {
       <p class="badge">⚡ 专为电教委 · 智慧白板管理</p>
 
       <h1>
-        让白板维护<br />
+        让白板优化工具获取<br />
         <span class="glow">快得像呼吸一样自然</span>
       </h1>
 
       <p class="hero-desc">
-        SWABox 是一款 Windows 桌面工具箱，集白板优化、修复、急救工具与常用软件入口于一身——
+        SWABox 是一款 Windows桌面工具箱，集白板优化、修复、急救工具下载与常用软件入口于一身——
         给电教委一套「一键直达」的工作流。
       </p>
 
