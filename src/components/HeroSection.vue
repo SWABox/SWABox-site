@@ -14,7 +14,7 @@ function scrollTo(id) {
       <p class="badge">⚡ 专为电教委 · 智慧白板管理</p>
 
       <h1>
-        让白板优化工具获取<br />
+        让白板维护<br />
         <span class="glow">快得像呼吸一样自然</span>
       </h1>
 
