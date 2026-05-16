@@ -12,6 +12,21 @@
   font-family: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
 }
 
+/* 强制覆盖 .dl-card 的透明问题 */
+.dl-card {
+  opacity: 1 !important; /* 强制不透明 */
+  background-color: #1e1e2e !important; /* 实体深灰蓝背景 */
+  border: 1px solid #313244 !important; /* 实体边框 */
+  visibility: visible !important; /* 确保可见 */
+}
+
+/* 修复 .reveal 动画类的初始透明状态 */
+.reveal {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 body {
