@@ -3,5 +3,6 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   plugins: [vue()],
-  base: '/swabox-site/'   // ✅ 必须是小写
+  base: './'
 })
+
