@@ -5,7 +5,7 @@ const release = ref(null)
 const loading = ref(true)
 const error = ref(false)
 
-// Windows Logo SVG
+// Windows Logo SVG（无依赖）
 const WinLogo = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22">
   <rect x="2" y="2" width="8.5" height="8.5" rx="1" fill="#f25022"/>
   <rect x="13.5" y="2" width="8.5" height="8.5" rx="1" fill="#7fba00"/>
@@ -15,36 +15,29 @@ const WinLogo = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" wid
 
 async function fetchRelease() {
   try {
-    console.log('🔄 正在获取 GitHub Release...')
+    console.log('🔄 正在从 master 分支获取版本信息...')
 
+    // ✅ 关键修正：使用 master 分支
     const response = await fetch(
-        'https://api.github.com/repos/liyunhan177/SWABox/releases/latest',
+        'https://cdn.jsdelivr.net/gh/liyunhan177/SWABox@master/version.json',
         {
           headers: {
-            'Accept': 'application/vnd.github.v3+json',
-            // 如果需要，可以添加 Authorization token 来避免 rate limit
-            // 'Authorization': 'token YOUR_GITHUB_TOKEN'
+            'Accept': 'application/json',
           }
         }
     )
 
-    console.log('📡 API 响应状态:', response.status)
+    console.log('📡 JsDelivr 响应状态:', response.status)
 
-    if (response.status === 403) {
-      console.warn('⚠️ GitHub API 速率限制，使用备用方案')
-      error.value = true
-    } else if (response.status === 404) {
-      console.warn('⚠️ 未找到 Release，使用备用方案')
-      error.value = true
-    } else if (!response.ok) {
+    if (!response.ok) {
       throw new Error(`HTTP ${response.status}`)
-    } else {
-      const data = await response.json()
-      console.log('✅ Release 数据:', data)
-      release.value = data
     }
+
+    const data = await response.json()
+    console.log('✅ 版本数据:', data)
+    release.value = data
   } catch (err) {
-    console.error('❌ 获取 Release 失败:', err)
+    console.error('❌ 获取版本失败:', err)
     error.value = true
   } finally {
     loading.value = false
@@ -68,7 +61,7 @@ onMounted(fetchRelease)
         <p style="margin-top: 12px; color: var(--text-dim)">正在查询最新版本...</p>
       </div>
 
-      <!-- 成功获取到 Release -->
+      <!-- ✅ 成功获取 version.json -->
       <div v-else-if="release && !error" class="dl-card reveal">
         <div class="dl-top">
           <!-- eslint-disable-next-line vue/no-v-html -->
@@ -77,38 +70,31 @@ onMounted(fetchRelease)
         </div>
 
         <h3 style="margin:14px 0 4px; font-size:1.1rem">
-          {{ release.tag_name || '最新版本' }}
+          {{ release.version || '最新版本' }}
         </h3>
         <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 16px;">
-          发布于 {{ new Date(release.published_at).toLocaleDateString() }}
+          发布于 {{ release.date }}
         </p>
 
-        <!-- 查找 .exe 文件 -->
-        <template v-if="release.assets && release.assets.length > 0">
-          <a v-for="asset in release.assets.filter(a => a.name.endsWith('.exe'))"
-             :key="asset.id"
-             :href="asset.browser_download_url"
-             class="btn-download"
-             target="_blank">
-            ⬇ 下载 {{ asset.name }}
-          </a>
-
-          <p style="margin-top: 12px; font-size: 0.75rem; color: var(--text-dim)">
-            其他文件可在
-            <a :href="release.html_url" target="_blank" style="text-decoration: underline; color: var(--accent)">
-              GitHub Release 页面
-            </a>
-            查看
-          </p>
-        </template>
-
-        <!-- 没有 .exe 但有 Release -->
-        <a v-else :href="release.html_url" target="_blank" class="btn-download">
-          📦 前往 GitHub 下载
+        <!-- 下载按钮 -->
+        <a :href="release.windows"
+           target="_blank"
+           class="btn-download">
+          ⬇ 下载 {{ release.version }}.exe
         </a>
+
+        <p style="margin-top: 12px; font-size: 0.75rem; color: var(--text-dim)">
+          其他文件可在
+          <a href="https://github.com/liyunhan177/SWABox/releases"
+             target="_blank"
+             style="text-decoration: underline; color: var(--accent)">
+            GitHub Release 页面
+          </a>
+          查看
+        </p>
       </div>
 
-      <!-- 出错或没有 Release（显示备用方案） -->
+      <!-- ❌ 兜底方案（无 version.json 或获取失败） -->
       <div v-else class="dl-card reveal">
         <div class="dl-top">
           <!-- eslint-disable-next-line vue/no-v-html -->
@@ -129,7 +115,7 @@ onMounted(fetchRelease)
         </a>
 
         <p style="margin-top: 16px; font-size: 0.75rem; color: var(--text-dim); opacity: 0.7;">
-          💡 提示：如果这是首次发布，请先在 GitHub 创建一个 Release
+          💡 提示：如需自动显示版本号，请在 SWABox 仓库 master 分支创建 version.json
         </p>
       </div>
 
