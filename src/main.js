@@ -6,6 +6,14 @@ import './style.css'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 
+import router from './router' // 引入路由
+import './style.css'
+
+createApp(App)
+    .use(router) // 使用路由
+    .mount('#app')
+
+
 const app = createApp(App)
 
 // ✅ 初始化 AOS
