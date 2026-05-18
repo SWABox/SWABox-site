@@ -45,16 +45,10 @@
             max-width: 800px;
         }
 
-        .logo-link {
-            display: inline-block;
-            margin-bottom: 40px;
-        }
-
         .logo-img {
-            height: 56px;
-            width: auto;
-            opacity: 0.9;
-            transition: opacity 0.3s;
+            width: 100%;
+            height: 100%;
+            animation: float 3.5s ease-in-out infinite;
         }
 
         .logo-img:hover {
@@ -66,12 +60,6 @@
             width: 180px;
             height: 180px;
             margin: 0 auto 32px;
-        }
-
-        .broken-box {
-            width: 100%;
-            height: 100%;
-            animation: float 3.5s ease-in-out infinite;
         }
 
         @keyframes float {
@@ -163,12 +151,7 @@
 <div class="content" id="content">
 
     <div class="icon-wrapper">
-        <svg class="broken-box" viewBox="0 0 100 100" fill="none">
-            <rect x="10" y="10" width="80" height="80" stroke="#0078d7" stroke-width="4"/>
-            <line x1="10" y1="10" x2="90" y2="90" stroke="#0078d7" stroke-width="4" stroke-linecap="round"/>
-            <line x1="90" y1="10" x2="10" y2="90" stroke="#0078d7" stroke-width="4" stroke-linecap="round"/>
-            <circle cx="50" cy="50" r="15" stroke="#0078d7" stroke-width="4"/>
-        </svg>
+        <img class="logo-img" src="logo-nobg.png" alt="">
         <span class="status-code">404</span>
     </div>
 
@@ -179,7 +162,7 @@
     </p>
 
     <div class="actions">
-        <a href="https://liyunhan177.github.io/SWABox-site/" class="btn-primary">返回首页</a>
+        <a href="https://swabox.cc.cd/" class="btn-primary">返回首页</a>
         <a href="https://github.com/liyunhan177/SWABox" target="_blank" class="btn-secondary">
             查看项目仓库
         </a>
