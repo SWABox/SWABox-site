@@ -1,7 +1,7 @@
 <template>
   <footer class="foot">
     <div class="container foot-inner">
-      <span>© 2026 <strong style="color:#818cf8">SWABox</strong> · MIT</span>
+      <span>© 2026 <strong style="color:#818cf8">SWABox</strong> · MIT <a href="../../public/privacy.html">隐私政策</a></span>
       <a href="https://github.com/liyunhan177/SWABox" target="_blank">
         GitHub →
       </a>
