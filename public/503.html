@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-        <html lang="zh-CN">
-        <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>500 - 服务器错误 | SWABox</title>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>503 - 服务不可用 | SWABox</title>
     <style>
         * {
             margin: 0;
@@ -69,7 +69,7 @@
             right: -24px;
             font-size: 52px;
             font-weight: 900;
-            color: rgba(220, 38, 38, 0.25); /* 红色调表示严重错误 */
+            color: rgba(234, 179, 8, 0.25); /* 黄色调表示等待 */
             font-family: 'Courier New', monospace;
         }
 
@@ -77,7 +77,7 @@
             font-size: 40px;
             font-weight: 700;
             margin-bottom: 18px;
-            background: linear-gradient(90deg, #fff, #dc2626);
+            background: linear-gradient(90deg, #fff, #eab308);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -107,24 +107,24 @@
         }
 
         .btn-primary {
-            background: #dc2626;
+            background: #eab308;
             color: #fff;
             border: none;
         }
 
         .btn-primary:hover {
-            background: #b91c1c;
+            background: #caa604;
             transform: translateY(-2px);
         }
 
         .btn-secondary {
             background: transparent;
-            color: #dc2626;
-            border: 2px solid #dc2626;
+            color: #eab308;
+            border: 2px solid #eab308;
         }
 
         .btn-secondary:hover {
-            background: rgba(220, 38, 38, 0.1);
+            background: rgba(234, 179, 8, 0.1);
             transform: translateY(-2px);
         }
 
@@ -146,25 +146,21 @@
 <div class="content" id="content">
     <div class="icon-wrapper">
         <svg class="icon-svg" viewBox="0 0 100 100" fill="none">
-            <!-- 齿轮爆炸/警告图形 -->
-            <circle cx="50" cy="50" r="30" stroke="#dc2626" stroke-width="4" stroke-dasharray="8 6"/>
-            <circle cx="50" cy="50" r="15" stroke="#dc2626" stroke-width="4"/>
-            <line x1="50" y1="20" x2="50" y2="35" stroke="#dc2626" stroke-width="4" stroke-linecap="round"/>
-            <line x1="50" y1="65" x2="50" y2="80" stroke="#dc2626" stroke-width="4" stroke-linecap="round"/>
-            <line x1="20" y1="50" x2="35" y2="50" stroke="#dc2626" stroke-width="4" stroke-linecap="round"/>
-            <line x1="65" y1="50" x2="80" y2="50" stroke="#dc2626" stroke-width="4" stroke-linecap="round"/>
-            <path d="M25 25 L35 35" stroke="#dc2626" stroke-width="4" stroke-linecap="round"/>
-            <path d="M65 65 L75 75" stroke="#dc2626" stroke-width="4" stroke-linecap="round"/>
-            <path d="M75 25 L65 35" stroke="#dc2626" stroke-width="4" stroke-linecap="round"/>
-            <path d="M35 65 L25 75" stroke="#dc2626" stroke-width="4" stroke-linecap="round"/>
+            <!-- 暂停/时钟图标 -->
+            <circle cx="50" cy="50" r="35" stroke="#eab308" stroke-width="4"/>
+            <polyline points="50,50 65,35" stroke="#eab308" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="50" cy="50" r="4" fill="#eab308"/>
+            <line x1="30" y1="30" x2="45" y2="45" stroke="#eab308" stroke-width="4" stroke-linecap="round" opacity="0.4"/>
+            <rect x="38" y="60" width="24" height="6" rx="2" stroke="#eab308" stroke-width="3"/>
+            <rect x="43" y="70" width="14" height="4" rx="2" stroke="#eab308" stroke-width="3"/>
         </svg>
-        <span class="status-code">500</span>
+        <span class="status-code">503</span>
     </div>
 
-    <h1 class="title">服务器出错了</h1>
+    <h1 class="title">服务暂时不可用</h1>
     <p class="subtitle">
-        色彩入侵了基沃托斯<br>
-        我们正在紧急修复中 🔧
+        色彩正在吞噬服务器容量<br>
+        请稍等片刻再尝试 ⏳
     </p>
 
     <div class="actions">
