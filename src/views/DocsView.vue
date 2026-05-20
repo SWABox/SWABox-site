@@ -45,11 +45,12 @@
 </template>
 
 <script setup>
+// 关键修复：导入所需的 Vue 函数
 import { ref, onMounted } from 'vue'
 import NavBar from '../components/NavBar.vue'
 import SiteFooter from '../components/SiteFooter.vue'
-import { marked } from 'marked'
 
+// 使用 CDN 版本的 marked（确保 index.html 中已引入）
 const menu = ref([
   { title: '🏠 概览', path: '/docs/README.md', children: [] },
   {
@@ -83,16 +84,14 @@ const loadDoc = async (path) => {
   currentPath.value = path
 
   try {
+    // 直接从 public 目录 fetch markdown 文件
     const response = await fetch(path)
 
-    // 更详细的错误处理
     if (!response.ok) {
       if (response.status === 404) {
         error.value = '文档不存在 (404)'
       } else if (response.status === 403) {
         error.value = '没有权限访问此文档 (403)'
-      } else if (response.status >= 500) {
-        error.value = '服务器错误，请稍后再试 (500)'
       } else {
         error.value = `加载失败 (${response.status})`
       }
@@ -100,9 +99,15 @@ const loadDoc = async (path) => {
     }
 
     const mdText = await response.text()
-    renderedHtml.value = marked(mdText)
+
+    // 使用全局 marked（通过 CDN 引入）
+    if (window.marked) {
+      renderedHtml.value = window.marked(mdText)
+    } else {
+      // 如果 marked 未加载，显示原始文本
+      renderedHtml.value = `<pre>${mdText}</pre>`
+    }
   } catch (err) {
-    // 捕获网络错误或其他异常
     error.value = '网络错误或文档加载失败'
     console.error('文档加载错误:', err)
   } finally {
@@ -111,8 +116,18 @@ const loadDoc = async (path) => {
 }
 
 onMounted(() => {
-  // 默认加载首页
-  loadDoc('/docs/README.md')
+  // 根据当前 URL 决定加载哪个文档
+  const path = window.location.pathname
+
+  if (path.startsWith('/docs/')) {
+    // 提取文档路径
+    const docPath = path.replace('/docs/', '/docs/')
+    const fullPath = docPath.endsWith('.md') ? docPath : `${docPath}.md`
+    loadDoc(fullPath)
+  } else {
+    // 默认加载首页
+    loadDoc('/docs/README.md')
+  }
 })
 </script>
 
@@ -136,6 +151,8 @@ onMounted(() => {
   top: 80px;
   border-right: 1px solid #333;
   padding-right: 20px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
 }
 .docs-sidebar a {
   display: block;
@@ -145,14 +162,14 @@ onMounted(() => {
   border-radius: 6px;
   transition: all 0.2s;
 }
-.docs-sidebar a:hover {
-  background: rgba(129, 140, 248, 0.1);
-  color: #fff;
-}
 .docs-sidebar a.active {
   background: rgba(129, 140, 248, 0.2);
   color: #818cf8;
   font-weight: bold;
+}
+.docs-sidebar a:hover {
+  background: rgba(129, 140, 248, 0.1);
+  color: #fff;
 }
 .sub-menu {
   padding-left: 16px;
@@ -185,6 +202,7 @@ onMounted(() => {
   padding: 2px 6px;
   border-radius: 4px;
   font-family: 'Consolas', monospace;
+  color: #a5b4fc;
 }
 .markdown-body :deep(pre) {
   background: #1a1a2e;
@@ -211,12 +229,26 @@ onMounted(() => {
 .loading, .error {
   text-align: center;
   padding: 60px;
-  color: #888;
 }
 .error {
   color: #ff6b6b;
   background: rgba(255, 107, 107, 0.1);
   border-radius: 8px;
   border: 1px solid rgba(255, 107, 107, 0.2);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .docs-container {
+    flex-direction: column;
+  }
+  .docs-sidebar {
+    width: 100%;
+    position: static;
+    border-right: none;
+    border-bottom: 1px solid #333;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
 }
 </style>

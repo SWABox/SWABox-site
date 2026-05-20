@@ -12,6 +12,8 @@ const links = [
   { label: '功能',    href: '#features' },
   { label: '技术栈',  href: '#stack' },
   { label: '下载',    href: '#download' },
+  // 新增文档链接
+  { label: '文档',    href: '/docs', ext: false, badge: 'NEW' },
   { label: 'GitHub',  href: 'https://github.com/liyunhan177/SWABox', ext: true },
 ]
 </script>
@@ -38,6 +40,8 @@ const links = [
            :href="l.href" :target="l.ext?'_blank':undefined"
            class="nav-link">
           {{ l.label }}
+          <!-- 新增文档徽章 -->
+          <span v-if="l.badge" class="docs-badge">{{ l.badge }}</span>
         </a>
       </nav>
 
@@ -55,6 +59,8 @@ const links = [
            :href="l.href" :target="l.ext?'_blank':undefined"
            class="nav-link" @click="mobileOpen=false">
           {{ l.label }}
+          <!-- 移动端也显示徽章 -->
+          <span v-if="l.badge" class="docs-badge mobile-badge">{{ l.badge }}</span>
         </a>
       </div>
     </transition>
@@ -87,7 +93,6 @@ const links = [
   height: 32px;
   width: auto;
   object-fit: contain;
-  /* 如果logo是白色/浅色，可以添加轻微发光效果 */
   filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.3));
   transition: filter 0.3s;
 }
@@ -102,6 +107,10 @@ const links = [
 .nav-link {
   padding: 6px 14px; border-radius: 8px; font-size:.88rem; font-weight:500;
   color: var(--text-dim); transition: .2s;
+  position: relative; /* 为徽章定位 */
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 .nav-link:hover { color:#fff; background:rgba(255,255,255,.06); }
 
@@ -122,9 +131,31 @@ const links = [
   .hamburger{display:flex}
   .mobile-drawer{display:flex}
   .logo-img {
-    height: 28px; /* 移动端稍微小一点 */
+    height: 28px;
   }
 }
 .drawer-enter-active,.drawer-leave-active{transition:opacity .25s,transform .25s}
 .drawer-enter-from,.drawer-leave-to{opacity:0;transform:translateY(-8px)}
+
+/* 新增文档徽章样式 */
+.docs-badge {
+  background: linear-gradient(45deg, #818cf8, #0078d7);
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 10px;
+  animation: pulse 2s infinite;
+  line-height: 1;
+}
+
+.mobile-badge {
+  font-size: 9px;
+  padding: 1px 5px;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
 </style>
