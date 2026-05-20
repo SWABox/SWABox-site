@@ -134,8 +134,6 @@ const links = [
     height: 28px;
   }
 }
-.drawer-enter-active,.drawer-leave-active{transition:opacity .25s,transform .25s}
-.drawer-enter-from,.drawer-leave-to{opacity:0;transform:translateY(-8px)}
 
 /* 新增文档徽章样式 */
 .docs-badge {
