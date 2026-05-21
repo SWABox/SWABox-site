@@ -8,14 +8,14 @@ import DownloadSection from '../components/DownloadSection.vue'
 import SiteFooter from '../components/SiteFooter.vue'
 
 const passed = ref(false)
-let isRunning = false
+let isExecuting = false // ✅ 防重入锁
 
 onMounted(async () => {
-  if (isRunning) return
-  isRunning = true
+  if (isExecuting) return
+  isExecuting = true
 
   try {
-    // ✅ 等待 DOM 完全渲染
+    // ✅ 等待 DOM 完全就绪
     await nextTick()
 
     if (!window.turnstile) {
@@ -29,16 +29,16 @@ onMounted(async () => {
       return
     }
 
-    // ✅ 直接执行，无需 reset（无感模式）
+    // ✅ 显式模式：必须传容器和参数
     const token = await window.turnstile.execute(
         '#turnstile-container',
         {
-          sitekey: '0x4AAAAAADTy6Tdom9xSIRzsdkr7qCFR1MQ', // 👈 替换为你的 Site Key
+          sitekey: '0x4AAAAAADTy6Tdom9xSIRzsdkr7qCFR1MQ', // 👈 必须是 Site Key
           size: 'invisible'
         }
     )
 
-    // ✅ 发送给 Workers
+    // ✅ 发给 Workers
     const res = await fetch(
         'https://turnstile-verify.liyunhan11111.workers.dev/',
         {
@@ -55,7 +55,7 @@ onMounted(async () => {
     console.error('Turnstile 错误:', e)
     alert('验证失败，请关闭浏览器扩展后重试')
   } finally {
-    isRunning = false
+    isExecuting = false
   }
 })
 </script>
@@ -73,7 +73,7 @@ onMounted(async () => {
   </div>
 
   <div v-else class="gate">
-    <!-- ✅ 确保容器存在 -->
+    <!-- ✅ 必须存在的容器 -->
     <div id="turnstile-container" style="display: none;"></div>
     <div class="spinner"></div>
     <p>安全检测中...</p>
