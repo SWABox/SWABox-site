@@ -17,6 +17,9 @@ let turnstileWidgetId = null
 const SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '0x4AAAAAADTy6YTSxcziFVXR'
 const MAX_RETRIES = 3
 
+// ✅ Worker 验证服务器 URL - 使用完整的 HTTPS URL
+const VERIFY_SERVER_URL = 'https://turnstile-verify.liyunhan11111.workers.dev/verify'
+
 // ✅ 网络诊断函数
 async function checkNetwork() {
   const checks = {
@@ -26,24 +29,25 @@ async function checkNetwork() {
 
   try {
     await fetch('https://challenges.cloudflare.com/', {
-      method: 'HEAD',
-      mode: 'no-cors',
-      timeout: 3000
+      method: 'GET',
+      mode: 'no-cors'
     })
     checks.cloudflare = true
+    console.log('✓ Cloudflare 可达')
   } catch (e) {
-    console.warn('Cloudflare 连接失败:', e.message)
+    console.warn('✗ Cloudflare 连接失败:', e.message)
   }
 
   try {
-    await fetch('https://swabox-workers.cc.cd/', {
-      method: 'HEAD',
-      mode: 'no-cors',
-      timeout: 3000
+    // ✅ 使用完整 URL 测试 Worker 服务
+    await fetch(VERIFY_SERVER_URL, {
+      method: 'OPTIONS',
+      mode: 'cors'
     })
     checks.worker = true
+    console.log('✓ Worker 服务可达')
   } catch (e) {
-    console.warn('Worker 服务连接失败:', e.message)
+    console.warn('✗ Worker 服务连接失败:', e.message)
   }
 
   return checks
@@ -88,11 +92,11 @@ async function initTurnstile() {
           sitekey: SITE_KEY,
           size: 'invisible',
           action: 'login',
-          retry: 'never', // ✅ 禁用自动重试，使用手动重试
+          retry: 'never',
           theme: 'light',
 
           callback: async (token) => {
-            console.log('✓ Turnstile 验证成功')
+            console.log('✓ Turnstile 验证成功，获得 token')
 
             if (!token) {
               error.value = '验证返回空令牌'
@@ -102,27 +106,40 @@ async function initTurnstile() {
             }
 
             try {
-              // ✅ 发送验证请求
+              console.log('正在发送验证请求到:', VERIFY_SERVER_URL)
+
+              // ✅ 发送验证请求 - 使用完整的 URL
               const controller = new AbortController()
               const timeoutId = setTimeout(() => controller.abort(), 15000)
 
               const res = await fetch(
-                  'https://swabox-workers.cc.cd/',
+                  VERIFY_SERVER_URL,
                   {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token }),
-                    signal: controller.signal
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      token,
+                      timestamp: Date.now()
+                    }),
+                    signal: controller.signal,
+                    mode: 'cors',
+                    credentials: 'omit'
                   }
               )
 
               clearTimeout(timeoutId)
 
+              console.log('服务器响应状态:', res.status)
+
               if (!res.ok) {
-                throw new Error(`服务器错误: ${res.status}`)
+                throw new Error(`服务器错误: ${res.status} ${res.statusText}`)
               }
 
               const data = await res.json()
+              console.log('服务器响应数据:', data)
 
               if (data.success) {
                 passed.value = true
@@ -133,10 +150,19 @@ async function initTurnstile() {
               }
             } catch (e) {
               console.error('验证请求错误:', e)
+              console.error('错误详情:', {
+                name: e.name,
+                message: e.message
+              })
+
               if (e.name === 'AbortError') {
                 error.value = '验证超时'
+              } else if (e.message.includes('405')) {
+                error.value = '服务器配置错误 (405)'
+              } else if (e.message.includes('Failed to fetch')) {
+                error.value = '网络连接失败'
               } else {
-                error.value = '网络请求失败'
+                error.value = '请求失败: ' + e.message
               }
               loading.value = false
             } finally {
@@ -210,6 +236,7 @@ async function handleRetry() {
 
 onMounted(async () => {
   console.log('开始初始化验证...')
+  console.log('验证服务器 URL:', VERIFY_SERVER_URL)
 
   // ✅ 先检查网络
   const networkStatus = await checkNetwork()
@@ -226,6 +253,7 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <!-- ✅ 验证通过后显示主页面 -->
   <div v-if="passed">
     <NavBar />
     <main>
@@ -237,10 +265,12 @@ onUnmounted(() => {
     <SiteFooter />
   </div>
 
+  <!-- ✅ 验证前显示加载或错误状态 -->
   <div v-else class="gate">
+    <!-- Turnstile 容器必须始终存在 -->
     <div id="turnstile-container" class="turnstile-hidden"></div>
 
-    <!-- 加载中 -->
+    <!-- 加载中状态 -->
     <div v-if="loading" class="status-box">
       <div class="spinner"></div>
       <p>安全检测中...</p>
@@ -316,7 +346,7 @@ onUnmounted(() => {
   margin-top: 8px;
 }
 
-/* 错误状态 */
+/* 错误状态样式 */
 .error {
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
