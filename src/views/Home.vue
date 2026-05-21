@@ -17,6 +17,9 @@ let turnstileWidgetId = null
 const SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '0x4AAAAAADTy6YTSxcziFVXR'
 const MAX_RETRIES = 3
 
+// ✅ Worker 验证服务器 URL - 使用完整的 HTTPS URL
+const VERIFY_SERVER_URL = 'https://turnstile-verify.liyunhan11111.workers.dev/verify'
+
 // ✅ 网络诊断函数
 async function checkNetwork() {
   const checks = {
@@ -27,23 +30,24 @@ async function checkNetwork() {
   try {
     await fetch('https://challenges.cloudflare.com/', {
       method: 'HEAD',
-      mode: 'no-cors',
-      timeout: 3000
+      mode: 'no-cors'
     })
     checks.cloudflare = true
+    console.log('✓ Cloudflare 可达')
   } catch (e) {
-    console.warn('Cloudflare 连接失败:', e.message)
+    console.warn('✗ Cloudflare 连接失败:', e.message)
   }
 
   try {
-    await fetch('swabox-works.cc.cd', {
-      method: 'HEAD',
-      mode: 'no-cors',
-      timeout: 3000
+    // ✅ 使用完整 URL 测试 Worker 服务
+    await fetch(VERIFY_SERVER_URL, {
+      method: 'OPTIONS',
+      mode: 'cors'
     })
     checks.worker = true
+    console.log('✓ Worker 服务可达')
   } catch (e) {
-    console.warn('Worker 服务连接失败:', e.message)
+    console.warn('✗ Worker 服务连接失败:', e.message)
   }
 
   return checks
@@ -88,11 +92,11 @@ async function initTurnstile() {
           sitekey: SITE_KEY,
           size: 'invisible',
           action: 'login',
-          retry: 'never', // ✅ 禁用自动重试，使用手动重试
+          retry: 'never',
           theme: 'light',
 
           callback: async (token) => {
-            console.log('✓ Turnstile 验证成功')
+            console.log('✓ Turnstile 验证成功，获得 token')
 
             if (!token) {
               error.value = '验证返回空令牌'
@@ -102,27 +106,40 @@ async function initTurnstile() {
             }
 
             try {
-              // ✅ 发送验证请求
+              console.log('正在发送验证请求到:', VERIFY_SERVER_URL)
+
+              // ✅ 发送验证请求 - 使用完整的 URL
               const controller = new AbortController()
               const timeoutId = setTimeout(() => controller.abort(), 15000)
 
               const res = await fetch(
-                  'https://swabox-workers.cc.cd/',
+                  VERIFY_SERVER_URL,
                   {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token }),
-                    signal: controller.signal
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      token,
+                      timestamp: Date.now()
+                    }),
+                    signal: controller.signal,
+                    mode: 'cors',
+                    credentials: 'omit'
                   }
               )
 
               clearTimeout(timeoutId)
 
+              console.log('服务器响应状态:', res.status)
+
               if (!res.ok) {
-                throw new Error(`服务器错误: ${res.status}`)
+                throw new Error(`服务器错误: ${res.status} ${res.statusText}`)
               }
 
               const data = await res.json()
+              console.log('服务器响应数据:', data)
 
               if (data.success) {
                 passed.value = true
@@ -133,10 +150,19 @@ async function initTurnstile() {
               }
             } catch (e) {
               console.error('验证请求错误:', e)
+              console.error('错误详情:', {
+                name: e.name,
+                message: e.message
+              })
+
               if (e.name === 'AbortError') {
                 error.value = '验证超时'
+              } else if (e.message.includes('405')) {
+                error.value = '服务器配置错误 (405)'
+              } else if (e.message.includes('Failed to fetch')) {
+                error.value = '网络连接失败'
               } else {
-                error.value = '网络请求失败'
+                error.value = '请求失败: ' + e.message
               }
               loading.value = false
             } finally {
@@ -210,6 +236,7 @@ async function handleRetry() {
 
 onMounted(async () => {
   console.log('开始初始化验证...')
+  console.log('验证服务器 URL:', VERIFY_SERVER_URL)
 
   // ✅ 先检查网络
   const networkStatus = await checkNetwork()
@@ -224,179 +251,3 @@ onUnmounted(() => {
   }
 })
 </script>
-
-<template>
-  <div v-if="passed">
-    <NavBar />
-    <main>
-      <HeroSection />
-      <Features />
-      <TechStack />
-      <DownloadSection />
-    </main>
-    <SiteFooter />
-  </div>
-
-  <div v-else class="gate">
-    <div id="turnstile-container" class="turnstile-hidden"></div>
-
-    <!-- 加载中 -->
-    <div v-if="loading" class="status-box">
-      <div class="spinner"></div>
-      <p>安全检测中...</p>
-      <p class="hint">请稍候，正在连接验证服务</p>
-    </div>
-
-    <!-- 错误状态 -->
-    <div v-else-if="error" class="status-box error">
-      <div class="error-icon">⚠️</div>
-      <h3>{{ error }}</h3>
-      <p class="error-detail">已重试 {{ retryCount }} / {{ MAX_RETRIES }} 次</p>
-
-      <button
-          v-if="retryCount < MAX_RETRIES"
-          @click="handleRetry"
-          class="retry-btn"
-      >
-        重新尝试 ({{ retryCount }}/{{ MAX_RETRIES }})
-      </button>
-
-      <p v-else class="max-retry-hint">
-        已达到最大重试次数<br>
-        请检查网络连接或稍后再试
-      </p>
-
-      <div class="troubleshoot">
-        <p>💡 排查建议：</p>
-        <ul>
-          <li>检查网络连接是否正常</li>
-          <li>关闭 VPN 或代理后重试</li>
-          <li>尝试刷新页面</li>
-          <li>切换其他网络（如手机热点）</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</template>
-
-<style scoped>
-.gate {
-  height: 100vh;
-  background: var(--bg-dark, #1a1a2e);
-  color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-}
-
-.status-box {
-  text-align: center;
-  max-width: 500px;
-}
-
-.spinner {
-  width: 48px;
-  height: 48px;
-  border: 4px solid rgba(255,255,255,0.1);
-  border-left-color: #6366f1;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 20px;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.hint {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.5);
-  margin-top: 8px;
-}
-
-/* 错误状态 */
-.error {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 12px;
-  padding: 32px;
-}
-
-.error-icon {
-  font-size: 48px;
-  margin-bottom: 16px;
-}
-
-.error h3 {
-  color: #fca5a5;
-  margin: 0 0 8px;
-  font-size: 1.25rem;
-}
-
-.error-detail {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.875rem;
-  margin: 12px 0;
-}
-
-.retry-btn {
-  margin-top: 16px;
-  padding: 12px 32px;
-  background: linear-gradient(135deg, #6366f1, #818cf8);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.retry-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
-}
-
-.retry-btn:active {
-  transform: translateY(0);
-}
-
-.max-retry-hint {
-  color: #fca5a5;
-  margin-top: 16px;
-  line-height: 1.6;
-}
-
-.troubleshoot {
-  margin-top: 24px;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  text-align: left;
-}
-
-.troubleshoot p {
-  margin: 0 0 8px;
-  font-weight: 600;
-  color: #fbbf24;
-}
-
-.troubleshoot ul {
-  margin: 0;
-  padding-left: 20px;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.875rem;
-  line-height: 1.8;
-}
-
-.turnstile-hidden {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-}
-</style>
