@@ -45,7 +45,7 @@ onMounted(async () => {
     turnstileWidgetId = window.turnstile.render(
         '#turnstile-container',
         {
-          sitekey: '0x4AAAAAADTy6Tdom9xSIRzsdkr7qCFR1MQ',
+          sitekey: '0x4AAAAAADTy6YTSxcziFVXR',
           size: 'invisible',
           action: 'login',
 
