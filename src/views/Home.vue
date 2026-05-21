@@ -7,6 +7,10 @@ import TechStack from '../components/TechStack.vue'
 import DownloadSection from '../components/DownloadSection.vue'
 import SiteFooter from '../components/SiteFooter.vue'
 
+// ✅ 添加 Turnstile 类型声明
+/** @type {{ execute: (container: string, options: { sitekey: string; size: string }) => Promise<string> }} */
+const turnstile = window.turnstile
+
 const passed = ref(false)
 let isExecuting = false // ✅ 防重入锁
 
@@ -15,10 +19,18 @@ onMounted(async () => {
   isExecuting = true
 
   try {
+    // ✅ 等待 DOM 完全就绪
     await nextTick()
 
+    // ✅ 等待 Turnstile 脚本加载完成
+    let attempts = 0
+    while (!window.turnstile && attempts < 50) {
+      await new Promise(resolve => setTimeout(resolve, 100))
+      attempts++
+    }
+
     if (!window.turnstile) {
-      alert('Turnstile 未加载，请刷新页面')
+      alert('Turnstile 脚本加载失败，请检查 CSP 设置')
       return
     }
 
@@ -29,7 +41,7 @@ onMounted(async () => {
     }
 
     // ✅ 直接执行，无需 reset
-    const token = await window.turnstile.execute(
+    const token = await turnstile.execute(
         '#turnstile-container',
         {
           sitekey: '0x4AAAAAADTy6Tdom9xSIRzsdkr7qCFR1MQ', // 👈 替换为你的 Site Key
@@ -51,12 +63,13 @@ onMounted(async () => {
 
   } catch (e) {
     console.error('Turnstile 错误:', e)
-    alert('验证失败，请关闭浏览器扩展后重试')
+    alert('验证失败，请检查网络连接或 CSP 设置')
   } finally {
     isExecuting = false
   }
 })
 </script>
+
 
 <template>
   <div v-if="passed">
