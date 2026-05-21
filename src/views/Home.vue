@@ -18,9 +18,9 @@ onMounted(async () => {
   try {
     await nextTick()
 
-    // ✅ 等待 Turnstile 脚本加载，增加超时处理
+    // ✅ 等待 Turnstile 脚本加载
     let attempts = 0
-    const maxAttempts = 100 // 增加到 10 秒
+    const maxAttempts = 100
     while (!window.turnstile && attempts < maxAttempts) {
       await new Promise(resolve => setTimeout(resolve, 100))
       attempts++
@@ -41,55 +41,81 @@ onMounted(async () => {
       return
     }
 
-    // ✅ 使用 execute() 方法（适合 invisible 模式）
-    const token = await window.turnstile.execute(
+    // ✅ 使用 render() + callback 模式，避免重复执行问题
+    turnstileWidgetId = window.turnstile.render(
         '#turnstile-container',
         {
           sitekey: '0x4AAAAAADTy6Tdom9xSIRzsdkr7qCFR1MQ',
           size: 'invisible',
-          action: 'login' // 可选：添加动作标识
+          action: 'login',
+
+          // ✅ 成功回调
+          callback: async (token) => {
+            console.log('Turnstile 验证成功，获得 token')
+
+            if (!token) {
+              console.error('Turnstile 返回空 token')
+              alert('验证失败，请刷新页面重试')
+              isExecuting = false
+              return
+            }
+
+            try {
+              // ✅ 发送 token 到服务器验证
+              const res = await fetch(
+                  'https://turnstile-verify.liyunhan11111.workers.dev/',
+                  {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token })
+                  }
+              )
+
+              if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`)
+              }
+
+              const data = await res.json()
+
+              if (data.success) {
+                passed.value = true
+              } else {
+                console.error('Turnstile 验证失败:', data)
+                alert('安全验证失败，请刷新页面重试')
+              }
+            } catch (e) {
+              console.error('验证请求错误:', e)
+              if (e.message.includes('NetworkError') || e.message.includes('fetch')) {
+                alert('网络连接失败，请检查网络后重试')
+              } else {
+                alert('验证过程出错：' + e.message)
+              }
+            } finally {
+              isExecuting = false
+            }
+          },
+
+          // ✅ 错误回调
+          'error-callback': (errorCode) => {
+            console.error('Turnstile 错误代码:', errorCode)
+            alert('安全验证出错（错误码：' + errorCode + '），请刷新页面')
+            isExecuting = false
+          },
+
+          // ✅ 超时回调
+          'timeout-callback': () => {
+            console.warn('Turnstile 验证超时')
+            alert('验证超时，请刷新页面重试')
+            isExecuting = false
+          }
         }
     )
 
-    // ✅ 验证 token
-    if (!token) {
-      console.error('Turnstile 返回空 token')
-      alert('验证失败，请刷新页面重试')
-      isExecuting = false
-      return
-    }
-
-    // ✅ 发送 token 到服务器验证
-    const res = await fetch(
-        'https://turnstile-verify.liyunhan11111.workers.dev/',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token })
-        }
-    )
-
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`)
-    }
-
-    const data = await res.json()
-
-    if (data.success) {
-      passed.value = true
-    } else {
-      console.error('Turnstile 验证失败:', data)
-      alert('安全验证失败，请刷新页面重试')
-    }
+    console.log('Turnstile widget 已渲染，ID:', turnstileWidgetId)
 
   } catch (e) {
-    console.error('Turnstile 错误:', e)
-    if (e.message.includes('NetworkError') || e.message.includes('fetch')) {
-      alert('网络连接失败，请检查网络后重试')
-    } else {
-      alert('验证过程出错：' + e.message)
-    }
-  } finally {
+    console.error('Turnstile 初始化错误:', e)
+    alert('验证初始化失败：' + e.message)
     isExecuting = false
   }
 })
@@ -98,6 +124,7 @@ onMounted(async () => {
 onUnmounted(() => {
   if (turnstileWidgetId && window.turnstile) {
     window.turnstile.remove(turnstileWidgetId)
+    console.log('Turnstile widget 已清理')
   }
 })
 </script>
