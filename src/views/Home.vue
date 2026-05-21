@@ -15,7 +15,6 @@ onMounted(async () => {
   isExecuting = true
 
   try {
-    // ✅ 等待 DOM 完全就绪
     await nextTick()
 
     if (!window.turnstile) {
@@ -29,16 +28,15 @@ onMounted(async () => {
       return
     }
 
-    // ✅ 显式模式：必须传容器和参数
+    // ✅ 直接执行，无需 reset
     const token = await window.turnstile.execute(
         '#turnstile-container',
         {
-          sitekey: '0x4AAAAAADTy6Tdom9xSIRzsdkr7qCFR1MQ', // 👈 必须是 Site Key
+          sitekey: '0x4AAAAAADTy6Tdom9xSIRzsdkr7qCFR1MQ', // 👈 替换为你的 Site Key
           size: 'invisible'
         }
     )
 
-    // ✅ 发给 Workers
     const res = await fetch(
         'https://turnstile-verify.liyunhan11111.workers.dev/',
         {
@@ -73,7 +71,6 @@ onMounted(async () => {
   </div>
 
   <div v-else class="gate">
-    <!-- ✅ 必须存在的容器 -->
     <div id="turnstile-container" style="display: none;"></div>
     <div class="spinner"></div>
     <p>安全检测中...</p>
