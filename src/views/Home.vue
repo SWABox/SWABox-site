@@ -107,7 +107,7 @@ async function initTurnstile() {
               const timeoutId = setTimeout(() => controller.abort(), 15000)
 
               const res = await fetch(
-                  '\'https://swabox-workers.cc.cd/',
+                  'https://swabox-workers.cc.cd/',
                   {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
