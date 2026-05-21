@@ -18,7 +18,7 @@ const SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '0x4AAAAAADTy6YTSxcz
 const MAX_RETRIES = 3
 
 // ✅ Worker 验证服务器 URL - 使用完整的 HTTPS URL
-const VERIFY_SERVER_URL = 'https://turnstile-verify.liyunhan11111.workers.dev/verify'
+const VERIFY_SERVER_URL = 'https://swabox-workers.cc.cd/verify'
 
 // ✅ 网络诊断函数
 async function checkNetwork() {
