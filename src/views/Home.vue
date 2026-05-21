@@ -63,7 +63,7 @@ onMounted(async () => {
             try {
               // ✅ 发送 token 到服务器验证
               const res = await fetch(
-                  'https://turnstile-verify.liyunhan11111.workers.dev/',
+                  'swabox-workers.cc.cd',
                   {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
