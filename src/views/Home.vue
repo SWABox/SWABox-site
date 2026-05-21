@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'  // ✅ 拼写修正
 import NavBar from '../components/NavBar.vue'
 import HeroSection from '../components/HeroSection.vue'
 import Features from '../components/Features.vue'
@@ -11,10 +11,22 @@ const passed = ref(false)
 
 onMounted(async () => {
   try {
-    // ✅ 1. 拿 token
-    const token = await window.turnstile.execute()
+    // ✅ 等待 Turnstile 加载
+    if (!window.turnstile) {
+      alert('Turnstile 未加载，请刷新页面')
+      return
+    }
 
-    // ✅ 2. 发给 Workers
+    // ✅ 正确调用：传入容器 + 参数
+    const token = await window.turnstile.execute(
+        '#turnstile-container', // 容器 ID
+        {
+          sitekey: '0x4AAAAAADTy6Tdom9xSIRzsdkr7qCFR1MQ',
+          size: 'invisible' // 无感模式
+        }
+    )
+
+    // ✅ 发给 Workers
     const res = await fetch(
         'https://turnstile-verify.liyunhan11111.workers.dev/',
         {
@@ -39,6 +51,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <!-- ✅ 验证通过才显示主站 -->
   <div v-if="passed">
     <NavBar />
     <main>
@@ -50,9 +63,12 @@ onMounted(async () => {
     <SiteFooter />
   </div>
 
+  <!-- ✅ 验证中遮罩 -->
   <div v-else class="gate">
+    <!-- ✅ 必须有这个容器 -->
+    <div id="turnstile-container" style="display: none;"></div>
     <div class="spinner"></div>
-    <p>安全检测中…</p>
+    <p>安全检测中...</p>
   </div>
 </template>
 
