@@ -1,19 +1,17 @@
+<template>
+  <!-- 路由出口：所有页面在这里切换 -->
+  <router-view />
+</template>
+
 <script setup>
-import NavBar from './components/NavBar.vue'
-import HeroSection from './components/HeroSection.vue'
-import Features from './components/Features.vue'
-import TechStack from './components/TechStack.vue'
-import DownloadSection from './components/DownloadSection.vue'
-import SiteFooter from './components/SiteFooter.vue'
+// 不需要任何逻辑，路由接管一切
 </script>
 
-<template>
-  <NavBar />
-  <main>
-    <HeroSection />
-    <Features />
-    <TechStack />
-    <DownloadSection />
-  </main>
-  <SiteFooter />
-</template>
+<style>
+/* 全局样式，确保错误页全屏显示 */
+html, body, #app {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+</style>
