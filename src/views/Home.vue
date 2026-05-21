@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'  // ✅ 拼写修正
+import { ref, onMounted } from 'vue'
 import NavBar from '../components/NavBar.vue'
 import HeroSection from '../components/HeroSection.vue'
 import Features from '../components/Features.vue'
@@ -8,25 +8,29 @@ import DownloadSection from '../components/DownloadSection.vue'
 import SiteFooter from '../components/SiteFooter.vue'
 
 const passed = ref(false)
+let isRunning = false // ✅ 防重入锁
 
 onMounted(async () => {
+  if (isRunning) return
+  isRunning = true
+
   try {
-    // ✅ 等待 Turnstile 加载
     if (!window.turnstile) {
       alert('Turnstile 未加载，请刷新页面')
       return
     }
 
-    // ✅ 正确调用：传入容器 + 参数
+    // ✅ 先重置，再执行（官方推荐）
+    window.turnstile.reset('#turnstile-container')
+
     const token = await window.turnstile.execute(
-        '#turnstile-container', // 容器 ID
+        '#turnstile-container',
         {
-          sitekey: '0x4AAAAAADTy6Tdom9xSIRzsdkr7qCFR1MQ',
-          size: 'invisible' // 无感模式
+          sitekey: '0x4AAAAAADTy6Tdom9xSIRzsdkr7qCFR1MQ', // 👈 必须是 Site Key
+          size: 'invisible'
         }
     )
 
-    // ✅ 发给 Workers
     const res = await fetch(
         'https://turnstile-verify.liyunhan11111.workers.dev/',
         {
@@ -37,21 +41,18 @@ onMounted(async () => {
     )
 
     const data = await res.json()
+    passed.value = !!data.success
 
-    if (data.success) {
-      passed.value = true
-    } else {
-      alert('安全验证失败，请刷新页面')
-    }
   } catch (e) {
-    console.error(e)
-    alert('验证服务超时，请稍后再试')
+    console.error('Turnstile 错误:', e)
+    alert('验证失败，请关闭浏览器扩展后重试')
+  } finally {
+    isRunning = false
   }
 })
 </script>
 
 <template>
-  <!-- ✅ 验证通过才显示主站 -->
   <div v-if="passed">
     <NavBar />
     <main>
@@ -63,10 +64,9 @@ onMounted(async () => {
     <SiteFooter />
   </div>
 
-  <!-- ✅ 验证中遮罩 -->
   <div v-else class="gate">
-    <!-- ✅ 必须有这个容器 -->
-    <div id="turnstile-container" style="display: none;"></div>
+    <!-- ✅ 必须存在的容器 -->
+    <div id="turnstile-container" style="display:none"></div>
     <div class="spinner"></div>
     <p>安全检测中...</p>
   </div>
@@ -90,7 +90,5 @@ onMounted(async () => {
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>
