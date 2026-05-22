@@ -20,13 +20,6 @@
               <div class="spinner"></div>
               <p>正在加载安全组件...</p>
             </div>
-            <!-- 显示 sitekey 加载状态（仅开发调试用） -->
-            <div v-if="showDebugInfo && sitekey" class="debug-info">
-              <small>Site Key 已加载: {{ sitekey.substring(0, 10) }}...</small>
-            </div>
-            <div v-else-if="showDebugInfo" class="debug-error">
-              <small>❌ Site Key 未找到，请检查环境变量配置</small>
-            </div>
           </div>
 
           <!-- 自定义页脚与操作 -->
@@ -49,21 +42,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, defineEmits, computed } from 'vue';
+import { ref, onMounted, onUnmounted, defineEmits } from 'vue';
 
 const emit = defineEmits(['verified', 'error']);
 
-// 🔧 配置参数
-const showDebugInfo = import.meta.env.DEV; // 仅开发环境显示调试信息
-
-// 🎯 关键修改：从环境变量读取 sitekey
-// 使用 Vite 的环境变量前缀 VITE_
+// 🎯 从环境变量读取 sitekey
 const sitekey = import.meta.env.VITE_TURNSTILE_SITE_KEY;
-
-// 验证 sitekey 是否有效
-const isValidSiteKey = computed(() => {
-  return sitekey && sitekey.startsWith('0x4AAAAAA');
-});
 
 // 状态
 const isLoaded = ref(false);
@@ -80,12 +64,6 @@ function renderWidget() {
     return;
   }
 
-  if (!isValidSiteKey.value) {
-    console.error('❌ Turnstile Site Key 格式无效。应以 0x4AAAAAA 开头。');
-    emit('error', '验证配置无效');
-    return;
-  }
-
   // 确保 Turnstile 库已加载
   if (!window.turnstile) {
     console.error('Turnstile 库未加载。');
@@ -97,14 +75,12 @@ function renderWidget() {
     return;
   }
 
-  // 🎯 使用从环境变量读取的 sitekey
   try {
     widgetId = window.turnstile.render(widgetContainer.value, {
-      sitekey: sitekey, // ✅ 从环境变量读取
+      sitekey: sitekey,
       theme: 'auto',
-      size: 'normal', // 托管模式
+      size: 'normal',
       callback: (token) => {
-        // 验证成功，将 token 发送给父组件
         emit('verified', token);
       },
       'error-callback': (errorCode) => {
@@ -113,8 +89,6 @@ function renderWidget() {
     });
 
     isLoaded.value = true;
-    console.log(`✅ Turnstile 小部件已渲染，ID: ${widgetId}`);
-    console.log(`🔑 使用的 Site Key: ${sitekey.substring(0, 15)}...`);
   } catch (error) {
     console.error('渲染 Turnstile 小部件时出错:', error);
     emit('error', '验证组件初始化失败');
@@ -133,14 +107,6 @@ function handleRefresh() {
 
 // 生命周期
 onMounted(() => {
-  // 检查环境变量
-  if (showDebugInfo) {
-    console.log('🔧 开发环境调试信息:');
-    console.log('- VITE_TURNSTILE_SITE_KEY:', sitekey ? `${sitekey.substring(0, 10)}...` : '未设置');
-    console.log('- import.meta.env.MODE:', import.meta.env.MODE);
-    console.log('- import.meta.env.DEV:', import.meta.env.DEV);
-  }
-
   // 等待 DOM 和脚本就绪
   const checkAndRender = () => {
     if (window.turnstile) {
@@ -243,30 +209,6 @@ onUnmounted(() => {
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 10px;
-}
-
-/* 调试信息样式 */
-.debug-info {
-  position: absolute;
-  bottom: 5px;
-  right: 8px;
-  font-size: 0.7rem;
-  color: #10b981;
-  background: rgba(16, 185, 129, 0.1);
-  padding: 2px 6px;
-  border-radius: 4px;
-  border: 1px solid rgba(16, 185, 129, 0.2);
-}
-.debug-error {
-  position: absolute;
-  bottom: 5px;
-  right: 8px;
-  font-size: 0.7rem;
-  color: #ef4444;
-  background: rgba(239, 68, 68, 0.1);
-  padding: 2px 6px;
-  border-radius: 4px;
-  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .footer {

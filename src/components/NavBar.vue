@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const scrolled = ref(false)
 const mobileOpen = ref(false)
 
@@ -9,13 +11,20 @@ onMounted(() => window.addEventListener('scroll', onScroll))
 onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
 const links = [
+  { label: '主页',    href: '/', isRouter: true },
   { label: '功能',    href: '#features' },
   { label: '技术栈',  href: '#stack' },
   { label: '下载',    href: '#download' },
-  // 新增文档链接
-  { label: '文档',    href: '/docs', ext: false, badge: 'NEW' },
   { label: 'GitHub',  href: 'https://github.com/liyunhan177/SWABox', ext: true },
 ]
+
+function handleLinkClick(link, event) {
+  if (link.isRouter) {
+    event.preventDefault()
+    router.push(link.href)
+    mobileOpen.value = false
+  }
+}
 </script>
 
 <template>
@@ -38,10 +47,9 @@ const links = [
       <nav class="desktop-links">
         <a v-for="l in links" :key="l.label"
            :href="l.href" :target="l.ext?'_blank':undefined"
-           class="nav-link">
+           class="nav-link"
+           @click="handleLinkClick(l, $event)">
           {{ l.label }}
-          <!-- 新增文档徽章 -->
-          <span v-if="l.badge" class="docs-badge">{{ l.badge }}</span>
         </a>
       </nav>
 
@@ -57,10 +65,9 @@ const links = [
       <div v-if="mobileOpen" class="mobile-drawer">
         <a v-for="l in links" :key="l.label"
            :href="l.href" :target="l.ext?'_blank':undefined"
-           class="nav-link" @click="mobileOpen=false">
+           class="nav-link"
+           @click="handleLinkClick(l, $event)">
           {{ l.label }}
-          <!-- 移动端也显示徽章 -->
-          <span v-if="l.badge" class="docs-badge mobile-badge">{{ l.badge }}</span>
         </a>
       </div>
     </transition>
