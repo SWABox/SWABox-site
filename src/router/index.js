@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
 import Privacy from '../views/Privacy.vue';
 import Terms from '../views/Terms.vue';
+import Challenge from '../views/Challenge.vue';
 
 // 定义路由
 const routes = [
@@ -19,6 +20,11 @@ component: Privacy,
 path: '/terms',
 name: 'Terms',
 component: Terms,
+},
+{
+path: '/challenge',
+name: 'Challenge',
+component: Challenge,
 },
 ];
 
@@ -57,9 +63,9 @@ isVerified = valid && !isExpired;
 
 // 3. 逻辑判断
 if (requiresAuth && !isVerified) {
-// 如果需要验证但未验证，重定向到首页（会触发验证流程）
+// 如果需要验证但未验证，重定向到验证页面
 // 可以将目标路径存入 query，验证后跳转
-next({ path: '/', query: { redirect: to.fullPath } });
+next({ path: '/challenge', query: { redirect: to.fullPath } });
 } else {
 // 放行
 next();

@@ -6,111 +6,355 @@ function scrollTo(id) {
 
 <template>
   <section class="hero">
-    <!-- 背景光斑 -->
-    <div class="orb orb1" />
-    <div class="orb orb2" />
+    <div class="hero__bg">
+      <div class="hero__glow hero__glow--1"></div>
+      <div class="hero__glow hero__glow--2"></div>
+      <div class="hero__glow hero__glow--3"></div>
+    </div>
 
-    <div class="container hero-content">
-      <p class="badge">⚡ 专为电教委 · 智慧白板管理</p>
+    <div class="container hero__content">
+      <div class="hero__badge">
+        <span class="hero__badge-icon">⚡</span>
+        <span class="hero__badge-text">专为电教委 · 智慧白板管理</span>
+      </div>
 
-      <h1>
-        让白板维护<br />
+      <h1 class="hero__title">
+        让白板维护
+        <br>
         <span class="glow">快得像呼吸一样自然</span>
       </h1>
 
-      <p class="hero-desc">
-        SWABox 是一款 Windows桌面工具箱，集白板优化、修复、急救工具下载与常用软件入口于一身——
+      <p class="hero__desc">
+        SWABox 是一款 Windows 桌面工具箱，集白板优化、修复、急救工具下载与常用软件入口于一身——
         给电教委一套「一键直达」的工作流。
       </p>
 
-      <div class="cta-group">
-        <a href="#download" class="btn-primary" @click.prevent="scrollTo('#download')">
-          <svg class="wicon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-            <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+      <div class="hero__actions">
+        <button class="btn btn--primary" @click.prevent="scrollTo('#download')">
+          <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
           </svg>
           下载 Windows 版
-        </a>
+        </button>
 
-        <a href="https://github.com/liyunhan177/SWABox" target="_blank" class="btn-ghost">
-          ⭐ 在 GitHub 查看源码
+        <a href="https://github.com/liyunhan177/SWABox" target="_blank" class="btn btn--ghost">
+          <span>⭐ 在 GitHub 查看源码</span>
         </a>
       </div>
 
-      <p class="only-win">仅支持 Windows 10 / 11</p>
+      <div class="hero__meta">
+        <div class="hero__platform">
+          <svg class="hero__platform-icon" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="2" width="9" height="9" rx="1.5" fill="#f25022"></rect>
+            <rect x="13" y="2" width="9" height="9" rx="1.5" fill="#7fba00"></rect>
+            <rect x="2" y="13" width="9" height="9" rx="1.5" fill="#00a4ef"></rect>
+            <rect x="13" y="13" width="9" height="9" rx="1.5" fill="#ffb900"></rect>
+          </svg>
+          <span>仅支持 Windows 10 / 11</span>
+        </div>
+      </div>
     </div>
 
-    <!-- 向下指示箭头 -->
     <div class="scroll-hint" @click.prevent="scrollTo('#features')">
-      <span />
+      <span></span>
     </div>
   </section>
 </template>
 
 <style scoped>
 .hero {
-  position: relative; overflow:hidden;
-  min-height: 100svh; display:flex; align-items:center;
-  padding-top: var(--nav-h);
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  padding-top: var(--nav-height);
+  overflow: hidden;
 }
-/* 光斑 */
-.orb {
-  position:absolute; border-radius:50%; filter:blur(90px); opacity:.35; pointer-events:none;
-  animation: drift 12s ease-in-out infinite alternate;
+
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
-.orb1 { width:460px;height:460px;background:var(--accent);top:-120px;left:-80px; }
-.orb2 { width:380px;height:380px;background:var(--accent2);bottom:-100px;right:-60px;animation-delay:-6s }
-@keyframes drift { to { transform: translate(40px,30px) scale(1.08) } }
 
-.hero-content { position:relative; z-index:2; padding: 60px 0 40px; }
-
-.badge {
-  display:inline-block;
-  background: rgba(99,102,241,.12); color:var(--accent);
-  padding: 4px 14px; border-radius:999px; font-size:.78rem; font-weight:600;
-  letter-spacing:.04em; margin-bottom:20px;
-  border:1px solid rgba(99,102,241,.18);
+.hero__glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  animation: float 15s ease-in-out infinite;
 }
-h1 { font-size: clamp(2.4rem, 6vw, 4rem); font-weight:800; line-height:1.15;
-  letter-spacing:-.03em; color:#f5f5ff; }
-.hero-desc { margin-top:20px; color:var(--text-dim); max-width:540px; font-size:.98rem; }
 
-.cta-group { margin-top:32px; display:flex; flex-wrap:wrap; gap:14px; align-items:center; }
-.btn-primary {
-  display:inline-flex;align-items:center;gap:8px;
-  background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;
-  padding:13px 26px;border-radius:12px;font-weight:600;font-size:.95rem;
-  box-shadow:0 6px 24px rgba(99,102,241,.35);
-  transition:transform .18s,box-shadow .18s;
+.hero__glow--1 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.6) 0%, transparent 70%);
+  top: -200px;
+  left: -200px;
 }
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(99,102,241,.45)}
-.wicon{width:18px;height:18px}
 
-.btn-ghost {
-  padding:13px 22px;border-radius:12px;font-size:.92rem;font-weight:500;
-  border:1px solid var(--border);color:var(--text-dim);
-  transition:.2s;
+.hero__glow--2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.5) 0%, transparent 70%);
+  bottom: -150px;
+  right: -150px;
+  animation-delay: -5s;
 }
-.btn-ghost:hover{color:#fff;border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.04)}
 
-.only-win { margin-top:16px; font-size:.76rem; color:var(--text-dim); opacity:.6; }
+.hero__glow--3 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.4) 0%, transparent 70%);
+  top: 50%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+  animation-delay: -8s;
+  opacity: 0.6;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(50px, 40px) scale(1.1);
+  }
+}
+
+.hero__content {
+  position: relative;
+  z-index: 2;
+  padding: 80px 0 60px;
+  animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(124, 58, 237, 0.1);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  padding: 10px 20px;
+  border-radius: 999px;
+  margin-bottom: 32px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 40px rgba(124, 58, 237, 0.1);
+  animation: badgeGlow 3s ease-in-out infinite;
+}
+
+@keyframes badgeGlow {
+  0%, 100% {
+    box-shadow: 0 0 40px rgba(124, 58, 237, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 60px rgba(124, 58, 237, 0.2);
+  }
+}
+
+.hero__badge-icon {
+  font-size: 1.2rem;
+  animation: spin 8s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.hero__badge-text {
+  color: var(--accent-light);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hero__title {
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  color: var(--text-bright);
+  margin-bottom: 16px;
+  text-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+}
+
+.hero__desc {
+  margin-top: 24px;
+  color: var(--text-secondary);
+  max-width: 640px;
+  font-size: 1.15rem;
+  line-height: 1.8;
+}
+
+.hero__actions {
+  margin-top: 48px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 32px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border: none;
+}
+
+.btn--primary {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-light));
+  color: white;
+  box-shadow: 0 8px 32px var(--accent-glow);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn--primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--accent-light), var(--cyan-light));
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn--primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 48px var(--accent-glow);
+}
+
+.btn--primary:hover::before {
+  opacity: 1;
+}
+
+.btn__icon,
+.btn span {
+  position: relative;
+  z-index: 1;
+}
+
+.btn__icon {
+  width: 20px;
+  height: 20px;
+}
+
+.btn--ghost {
+  background: var(--glass-1);
+  border: 1px solid var(--border-soft);
+  color: var(--text-secondary);
+  backdrop-filter: blur(8px);
+}
+
+.btn--ghost:hover {
+  background: var(--glass-2);
+  border-color: var(--border-medium);
+  color: var(--text-bright);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.hero__meta {
+  margin-top: 28px;
+}
+
+.hero__platform {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  padding: 10px 16px;
+  background: var(--glass-1);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.hero__platform-icon {
+  width: 20px;
+  height: 20px;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+}
 
 .scroll-hint {
-  position:absolute; bottom:28px; left:50%; transform:translateX(-50%);
-  cursor:pointer;
-}
-.scroll-hint span {
-  display:block; width:20px;height:32px;border:2px solid rgba(255,255,255,.18);border-radius:999px;position:relative;
-}
-.scroll-hint span::after{
-  content:'';position:absolute;top:6px;left:50%;transform:translateX(-50%);
-  width:4px;height:8px;border-radius:4px;background:rgba(255,255,255,.35);
-  animation:bounce 1.8s infinite;
-}
-@keyframes bounce {
-  0%,100%{top:6px;opacity:1} 50%{top:14px;opacity:.3}
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
 }
 
-@media(max-width:560px){ h1 br{display:none} }
+.scroll-hint span {
+  display: block;
+  width: 26px;
+  height: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  position: relative;
+}
+
+.scroll-hint span::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--accent-light), var(--cyan-light));
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    top: 10px;
+    opacity: 1;
+  }
+  50% {
+    top: 20px;
+    opacity: 0.4;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero__title br {
+    display: none;
+  }
+
+  .hero__content {
+    padding: 60px 0 50px;
+  }
+
+  .hero__actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn,
+  .btn--ghost {
+    width: 100%;
+    justify-content: center;
+  }
+}
 </style>
