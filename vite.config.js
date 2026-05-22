@@ -1,91 +1,31 @@
-// 此文件是一个 Cloudflare Pages Function
-// 路径: /api/verify-turnstile
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
 
-export async function onRequestPost(context) {
-  // context.env 包含了环境变量
-  const { request, env } = context;
-  const { TURNSTILE_SECRET_KEY } = env;
-
-  // 1. 检查环境变量
-  if (!TURNSTILE_SECRET_KEY) {
-    return new Response(
-        JSON.stringify({
-          success: false,
-          message: '服务器配置错误。',
-          'error-codes': ['missing-secret'],
-        }),
-        {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' }
-        }
-    );
-  }
-
-  try {
-    // 2. 解析前端传来的 JSON
-    const { token } = await request.json();
-
-    if (!token) {
-      return new Response(
-          JSON.stringify({
-            success: false,
-            message: '请求中缺少验证令牌。',
-            'error-codes': ['missing-input-response'],
-          }),
-          {
-            status: 400,
-            headers: { 'Content-Type': 'application/json' }
+export default defineConfig({
+  plugins: [vue()],
+  server: {
+    // 开发服务器代理，模拟 Pages Functions 的路由
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5173', // 或一个模拟端点
+        changeOrigin: true,
+        // 由于我们没有本地 Pages Functions 环境，
+        // 开发时你可以注释掉这部分，或者使用一个简单的 mock
+        bypass: (req, res, options) => {
+          // 这里可以返回一个模拟的成功响应用于开发测试
+          if (req.url.includes('/api/verify-turnstile') && req.method === 'POST') {
+            console.log('开发模式：模拟验证成功');
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ success: true, message: '开发模式模拟成功' }));
+            return true;
           }
-      );
-    }
-
-    // 3. 准备向 Cloudflare 验证 API 发送的数据
-    const formData = new FormData();
-    formData.append('secret', TURNSTILE_SECRET_KEY);
-    formData.append('response', token);
-    // 可选：如果需要，可以添加 remoteip
-    // const clientIP = request.headers.get('CF-Connecting-IP');
-    // if (clientIP) formData.append('remoteip', clientIP);
-
-    // 4. 向 Cloudflare 验证端点发送请求
-    const verifyUrl = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
-    const verifyResponse = await fetch(verifyUrl, {
-      method: 'POST',
-      body: formData,
-    });
-
-    const data = await verifyResponse.json();
-
-    // 5. 返回结果给前端
-    return new Response(
-        JSON.stringify({
-          success: data.success,
-          challenge_ts: data.challenge_ts,
-          hostname: data.hostname,
-          'error-codes': data['error-codes'],
-          message: data.success ? '验证通过。' : '人机验证失败，请重试。',
-        }),
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*', // 允许您的网站访问
-          },
-        }
-    );
-
-  } catch (error) {
-    // 6. 捕获处理过程中的任何错误
-    console.error('Function 内部错误:', error);
-    return new Response(
-        JSON.stringify({
-          success: false,
-          message: '验证服务暂时不可用。',
-          'error-codes': ['internal-error'],
-        }),
-        {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' }
-        }
-    );
-  }
-}
+        },
+      },
+    },
+  },
+  // 构建配置
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+  },
+});
