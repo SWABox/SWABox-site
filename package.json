@@ -12,7 +12,12 @@
   },
   "dependencies": {
     "aos": "^2.3.4",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
     "marked": "^9.1.6",
+    "node-fetch": "^3.3.2",
+    "nodemon": "^3.1.14",
     "vue": "^3.4.0",
     "vue-router": "^4.6.4"
   },
