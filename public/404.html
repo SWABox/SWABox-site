@@ -1,199 +1,228 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - 页面迷路了 | SWABox</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Segoe UI", "PingFang SC", sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - 页面迷路了 | SWABox</title>
+  <style>
+    :root {
+      --bg-base: #0a0a0a;
+      --bg-elevated: #111111;
+      --bg-surface: #181818;
+      --bg-hover: #1f1f1f;
+      --green-primary: #22c55e;
+      --green-light: #86efac;
+      --green-glow: rgba(34, 197, 94, 0.15);
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --text-dim: #52525b;
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --border-default: rgba(255, 255, 255, 0.1);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+    }
 
-        body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-            color: #fff;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        .background-grid {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image:
-                    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            z-index: 0;
-        }
+    body {
+      min-height: 100vh;
+      background: var(--bg-base);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
 
-        .content {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            padding: 20px;
-            transition: transform 0.1s ease-out;
-            max-width: 800px;
-        }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 100% 80% at 20% 0%, rgba(34, 197, 94, 0.04) 0%, transparent 50%),
+        radial-gradient(ellipse 80% 60% at 80% 100%, rgba(34, 197, 94, 0.03) 0%, transparent 50%);
+    }
 
-        .logo-link {
-            display: inline-block;
-            margin-bottom: 40px;
-        }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.35;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
 
-        .logo-img {
-            height: 56px;
-            width: auto;
-            opacity: 0.9;
-            transition: opacity 0.3s;
-        }
+    .content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 20px;
+      max-width: 800px;
+      animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
 
-        .logo-img:hover {
-            opacity: 1;
-        }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-        .icon-wrapper {
-            position: relative;
-            width: 180px;
-            height: 180px;
-            margin: 0 auto 32px;
-        }
+    .logo-link {
+      display: inline-block;
+      margin-bottom: 40px;
+      cursor: pointer;
+    }
 
-        .broken-box {
-            width: 100%;
-            height: 100%;
-            animation: float 3.5s ease-in-out infinite;
-        }
+    .logo-img {
+      height: 56px;
+      width: auto;
+      opacity: 0.9;
+      transition: opacity 0.3s;
+    }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-        }
+    .logo-img:hover {
+      opacity: 1;
+    }
 
-        .status-code {
-            position: absolute;
-            bottom: -12px;
-            right: -24px;
-            font-size: 52px;
-            font-weight: 900;
-            color: rgba(0, 120, 215, 0.25);
-            font-family: 'Courier New', monospace;
-        }
+    .icon-wrapper {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      margin: 0 auto 32px;
+    }
 
-        .title {
-            font-size: 40px;
-            font-weight: 700;
-            margin-bottom: 18px;
-            background: linear-gradient(90deg, #fff, #0078d7);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+    .error-icon {
+      width: 100%;
+      height: 100%;
+      animation: float 3.5s ease-in-out infinite;
+    }
 
-        .subtitle {
-            font-size: 17px;
-            color: #bbb;
-            line-height: 1.7;
-            margin-bottom: 48px;
-        }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
 
-        .actions {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+    .status-code {
+      position: absolute;
+      bottom: -12px;
+      right: -24px;
+      font-size: 52px;
+      font-weight: 900;
+      color: rgba(34, 197, 94, 0.15);
+      font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+    }
 
-        .btn-primary,
-        .btn-secondary {
-            padding: 14px 32px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
+    .title {
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 18px;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
 
-        .btn-primary {
-            background: #0078d7;
-            color: #fff;
-            border: none;
-        }
+    .subtitle {
+      font-size: 17px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 48px;
+      white-space: pre-line;
+    }
 
-        .btn-primary:hover {
-            background: #005fa3;
-            transform: translateY(-2px);
-        }
+    .actions {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
 
-        .btn-secondary {
-            background: transparent;
-            color: #0078d7;
-            border: 2px solid #0078d7;
-        }
+    .btn {
+      padding: 14px 32px;
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
 
-        .btn-secondary:hover {
-            background: rgba(0, 120, 215, 0.1);
-            transform: translateY(-2px);
-        }
+    .btn-primary {
+      background: var(--green-primary);
+      color: #000;
+    }
 
-        /* 响应式适配 */
-        @media (max-width: 768px) {
-            .title { font-size: 32px; }
-            .subtitle { font-size: 15px; }
-            .icon-wrapper { width: 140px; height: 140px; }
-            .status-code { font-size: 42px; }
-        }
+    .btn-primary:hover {
+      background: var(--green-light);
+      transform: translateY(-2px);
+    }
 
-        @media (max-width: 480px) {
-            .actions { flex-direction: column; }
-            .btn-primary, .btn-secondary { width: 100%; }
-        }
-    </style>
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-default);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-hover);
+      border-color: var(--green-primary);
+      color: var(--green-primary);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      .title { font-size: 32px; }
+      .subtitle { font-size: 15px; }
+      .icon-wrapper { width: 140px; height: 140px; }
+      .status-code { font-size: 42px; }
+    }
+
+    @media (max-width: 480px) {
+      .actions { flex-direction: column; }
+      .btn { width: 100%; }
+    }
+  </style>
 </head>
 <body>
-<div class="background-grid"></div>
-<div class="content" id="content">
+  <div class="content" id="content">
+    <div class="logo-link" onclick="window.location.href='/'">
+      <img src="/logo-nobg.png" alt="SWABox Logo" class="logo-img">
+    </div>
 
     <div class="icon-wrapper">
-        <svg class="broken-box" viewBox="0 0 100 100" fill="none">
-            <rect x="10" y="10" width="80" height="80" stroke="#0078d7" stroke-width="4"/>
-            <line x1="10" y1="10" x2="90" y2="90" stroke="#0078d7" stroke-width="4" stroke-linecap="round"/>
-            <line x1="90" y1="10" x2="10" y2="90" stroke="#0078d7" stroke-width="4" stroke-linecap="round"/>
-            <circle cx="50" cy="50" r="15" stroke="#0078d7" stroke-width="4"/>
-        </svg>
-        <span class="status-code">404</span>
+      <svg class="error-icon" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="40" stroke="var(--green-primary)" stroke-width="4" opacity="0.1"/>
+        <circle cx="50" cy="50" r="25" stroke="var(--green-primary)" stroke-width="4" opacity="0.2"/>
+        <text x="50" y="60" text-anchor="middle" font-size="32" font-weight="900" fill="var(--text-dim)">?</text>
+      </svg>
+      <span class="status-code">404</span>
     </div>
 
     <h1 class="title">页面迷路了</h1>
-    <p class="subtitle">
-        你访问的地址不存在<br>
-        可能被色彩侵蚀了 😅
-    </p>
+    <p class="subtitle">你访问的地址不存在
+可能被色彩侵蚀了</p>
 
     <div class="actions">
-        <a href="/" class="btn-primary">返回首页</a>
-        <a href="https://github.com/liyunhan177/SWABox" target="_blank" class="btn-secondary">
-            查看项目仓库
-        </a>
+      <a href="/" class="btn btn-primary">返回首页</a>
+      <a href="https://github.com/liyunhan177/SWABox" target="_blank" class="btn btn-secondary">
+        查看项目仓库
+      </a>
     </div>
-</div>
-
-<script>
-    const content = document.getElementById('content');
-    document.body.addEventListener('mousemove', (e) => {
-        const { clientX, clientY } = e;
-        const x = (window.innerWidth / 2 - clientX) / 60;
-        const y = (window.innerHeight / 2 - clientY) / 60;
-        content.style.transform = `translate(${x}px, ${y}px)`;
-    });
-</script>
+  </div>
 </body>
 </html>

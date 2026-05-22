@@ -16,51 +16,62 @@ npm run build
 npm run preview
 ```
 
+## 🔧 开发配置
+
+### 访问验证和错误页面
+
+在开发模式下，你可以通过以下路由访问不同页面：
+
+| 页面 | 路由 | 说明 |
+|------|------|------|
+| 验证页面 | `/challenge` | Cloudflare Turnstile 人机验证页面 |
+| 403 错误 | `/error/403` | 禁止访问页面 |
+| 404 错误 | `/error/404` | 页面未找到 |
+| 500 错误 | `/error/500` | 服务器错误 |
+| 502 错误 | `/error/502` | 网关错误 |
+| 503 错误 | `/error/503` | 服务不可用 |
+
+### 开发模式说明
+
+在开发环境中（`npm run dev`），验证守卫会自动跳过，你可以直接访问任何页面进行测试。
+
+在生产环境中，验证会正常工作。
+
+---
+
 ## ⏭️ 开发跳过验证功能
 
 ### 功能说明
 
 在人机验证页面添加了一个**开发模式跳过按钮**，方便开发时直接进入网站。
 
-### 特性
-
-- ✅ **仅在开发环境显示**（`npm run dev` 时）
-- ✅ **生产环境自动隐藏**（`npm run build` 时）
-- ✅ 醒目的红色设计，容易识别
-- ✅ 点击即可跳过验证直接进入网站
-
 ### 如何删除此功能
 
-当您准备部署到生产环境时，有以下几种方式删除此功能：
+当你准备部署到生产环境时，有以下几种方式删除此功能：
 
 #### 方法一：删除相关代码（推荐）
 
 1. 打开文件：`src/components/TurnstileChallenge.vue`
 
-2. 删除以下内容：
+2. 删除以下部分：
 
    **模板部分（Template）：**
    ```vue
    <!-- 开发跳过按钮 - 仅开发环境显示 -->
-   <button 
-     v-if="isDevelopment"
-     @click="handleSkip"
-     class="dev-skip-btn"
-   >
+   <div class="dev-panel" v-if="isDevelopment">
      <span class="dev-badge">开发模式</span>
-     <span>⏭️ 跳过验证</span>
-   </button>
+     <button @click="handleSkip" class="dev-btn">跳过验证</button>
+   </div>
    ```
 
    **脚本部分（Script）：**
    ```javascript
-   // 🔧 开发模式检测
+   // 开发模式检测
    const isDevelopment = import.meta.env.DEV;
    
-   // ⏭️ 开发跳过功能
+   // 开发跳过功能
    function handleSkip() {
-     console.log('⏭️ 开发模式：跳过人机验证');
-     // 生成一个假的 token 用于开发
+     console.log('开发模式：跳过人机验证');
      const fakeToken = 'dev-mode-fake-token-' + Date.now();
      emit('verified', fakeToken);
    }
@@ -68,26 +79,47 @@ npm run preview
 
    **样式部分（Style）：**
    ```css
-   /* 开发跳过按钮 */
-   .dev-skip-btn {
+   .dev-panel {
      position: fixed;
-     top: 20px;
-     right: 20px;
-     z-index: 1000;
+     top: 16px;
+     right: 16px;
      display: flex;
-     flex-direction: column;
      align-items: center;
-     gap: 8px;
-     background: linear-gradient(135deg, rgba(239,68,68,0.9), rgba(249,115,22,0.9));
-     border: 2px solid rgba(255,255,255,0.2);
-     padding: 12px 20px;
-     border-radius: 16px;
-     cursor: pointer;
-     transition: all 0.3s cubic-bezier(.4,0,.2,1);
-     box-shadow: 0 8px 32px rgba(239,68,68,0.4);
-     animation: devPulse 2s ease-in-out infinite;
+     gap: 12px;
+     background: var(--bg-surface);
+     border: 1px solid var(--border-default);
+     padding: 8px 12px;
+     border-radius: var(--radius-md);
+     z-index: 1000;
    }
-   /* ... 更多样式 ... */
+   
+   .dev-badge {
+     background: var(--green-glow);
+     color: var(--green-primary);
+     font-family: var(--font-mono);
+     font-size: 0.7rem;
+     font-weight: 700;
+     padding: 4px 10px;
+     border-radius: 999px;
+     text-transform: uppercase;
+     letter-spacing: 0.08em;
+   }
+   
+   .dev-btn {
+     background: transparent;
+     color: var(--text-secondary);
+     border: none;
+     padding: 6px 12px;
+     font-size: 0.85rem;
+     cursor: pointer;
+     border-radius: var(--radius-sm);
+     transition: all 0.2s;
+   }
+   
+   .dev-btn:hover {
+     background: var(--bg-hover);
+     color: var(--green-primary);
+   }
    ```
 
 #### 方法二：使用 CSS 隐藏（临时方案）
@@ -95,7 +127,7 @@ npm run preview
 在 `src/style.css` 中添加：
 ```css
 /* 永久隐藏开发跳过按钮 */
-.dev-skip-btn {
+.dev-panel {
   display: none !important;
 }
 ```
@@ -104,14 +136,14 @@ npm run preview
 
 将 `v-if="isDevelopment"` 改为 `v-if="false"`：
 ```vue
-<button v-if="false" class="dev-skip-btn">
+<div class="dev-panel" v-if="false">
   <!-- ... -->
-</button>
+</div>
 ```
 
 ### 验证功能在生产环境的注意事项
 
-⚠️ **重要提醒**：
+⚠️ **重要提醒：**
 
 1. 确保设置了正确的 `VITE_TURNSTILE_SITE_KEY` 环境变量
 2. 生产环境的验证 token 需要在服务器端通过 Cloudflare API 验证
@@ -131,30 +163,69 @@ VITE_TURNSTILE_SITE_KEY=your_prod_site_key_here
 
 获取 Site Key：https://dash.cloudflare.com/turnstile
 
+---
+
 ## 🎨 UI 设计系统
 
-### 色彩系统
+### 配色方案
 
 ```css
 :root {
-  --bg: #050508;           /* 主背景色 */
-  --bg-alt: #080810;        /* 替代背景色 */
-  --accent: #6366f1;        /* 主色调（蓝紫） */
-  --accent-light: #818cf8;   /* 亮色accent */
-  --accent2: #22d3ee;       /* 辅助色（青色） */
-  --text: #f0f0f5;          /* 主文字色 */
-  --text-dim: #8b8b9f;      /* 次要文字 */
-  --text-muted: #5f5f7a;    /* 弱化文字 */
+  --bg-base: #0a0a0a;
+  --bg-elevated: #111111;
+  --bg-surface: #181818;
+  --bg-hover: #1f1f1f;
+
+  --green-dim: #4ade80;
+  --green-primary: #22c55e;
+  --green-light: #86efac;
+  --green-muted: #166534;
+  --green-glow: rgba(34, 197, 94, 0.15);
+
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --text-dim: #52525b;
+
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.15);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --nav-height: 64px;
+
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
 }
 ```
 
 ### 设计特点
 
-- 🎯 **科技精致主义**风格
-- ✨ 丰富的动画和过渡效果
-- 🔮 玻璃拟态和光晕效果
+- 🎯 **《黑客与画家》风格** - 深灰 + 淡绿配色
+- 🎨 噪点背景效果
+- ⚡ 平滑的微交互动画
 - 📱 完全响应式设计
-- ⚡ 流畅的滚动和悬停交互
+- 🎭 不对称布局设计
+
+### 禁止事项
+
+根据设计规范，以下内容应该避免：
+
+- ❌ 紫色或靛蓝色渐变
+- ❌ 纯平背景色（必须有噪点或渐变）
+- ❌ 完美居中对齐
+- ❌ 等宽多栏（必须不对称）
+- ❌ 高深的专业名词和无意义空话
+- ❌ Lorem Ipsum 占位文本
+- ❌ 被动时态和长句
+- ❌ 默认 UI 组件库（必须深度定制）
+- ❌ Emoji 作为功能图标
+- ❌ 线性 ease-in-out 动画
+
+---
 
 ## 📦 项目结构
 
@@ -169,27 +240,39 @@ swabox-site/
 │   │   ├── DownloadSection.vue # 下载区
 │   │   ├── SiteFooter.vue   # 页脚
 │   │   └── TurnstileChallenge.vue # 验证页面
-│   ├── views/             # 页面视图
-│   ├── router/            # 路由配置
-│   ├── assets/            # 静态资源
+│   ├── views/              # 页面视图
+│   │   ├── Home.vue        # 首页
+│   │   ├── Privacy.vue     # 隐私政策
+│   │   ├── Terms.vue       # 用户协议
+│   │   ├── Challenge.vue   # 验证页
+│   │   └── Error.vue       # 错误页（通用）
+│   ├── router/             # 路由配置
+│   ├── assets/             # 静态资源
 │   ├── App.vue            # 根组件
 │   ├── main.js            # 入口文件
 │   └── style.css          # 全局样式
 ├── public/                # 公共资源
+│   ├── logo-nobg.png      # Logo
+│   └── 其他静态文件...
 ├── functions/             # Cloudflare Functions
-├── package.json
-└── vite.config.js
+├── _redirects             # 路由重定向配置
+├── DEV_GUIDE.md           # 本文档
+└── ...
 ```
+
+---
 
 ## 🔧 技术栈
 
 - **框架**: Vue 3 (Composition API)
 - **构建工具**: Vite 5
 - **路由**: Vue Router 4
-- **动画**: AOS + 自定义 CSS 动画
-- **样式**: CSS3 (变量、网格、Flexbox)
+- **样式**: CSS 变量 + 自定义动画
 - **人机验证**: Cloudflare Turnstile
 - **后端**: Cloudflare Functions (用于验证 token)
+- **部署**: Cloudflare Pages
+
+---
 
 ## 🌐 部署
 
@@ -205,12 +288,17 @@ wrangler pages deploy dist
 
 详细部署指南：[Cloudflare Pages 部署文档](https://developers.cloudflare.com/pages/framework-guides/deploy-a-vue-site/)
 
+---
+
 ## 📝 开发注意事项
 
-1. **环境变量**：确保在 `.env` 中配置必要的环境变量
-2. **验证机制**：开发跳过功能仅在本地开发时可用
-3. **CORS 问题**：如果遇到 CORS 错误，检查 Cloudflare Functions 配置
-4. **本地存储**：验证状态存储在 localStorage，有效期 24 小时
+1. **环境变量**: 确保在 `.env` 中配置必要的环境变量
+2. **验证机制**: 开发模式会自动跳过验证
+3. **本地存储**: 验证状态存储在 localStorage，有效期 24 小时
+4. **错误页面**: 访问 `/error/:code` 查看不同错误状态
+5. **Logo 更新**: 使用 `public/logo-nobg.png` 替换原有图标
+
+---
 
 ## 🔐 安全建议
 
@@ -219,15 +307,18 @@ wrangler pages deploy dist
 3. ✅ 使用 HTTPS
 4. ✅ 定期更新依赖
 5. ✅ 监控异常访问
+6. ✅ 部署前移除开发跳过按钮
+
+---
 
 ## 📚 学习资源
 
 - [Vue 3 文档](https://vuejs.org/)
 - [Vite 指南](https://vitejs.dev/)
 - [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/)
-- [AOS 动画库](https://michalsnik.github.io/aos/)
+- [《黑客与画家》](https://book.douban.com/subject/6021448/)
 
 ---
 
-**版本**: 1.0.0  
+**版本**: 2.0.0  
 **最后更新**: 2026-05-22
