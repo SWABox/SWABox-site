@@ -138,3 +138,26 @@ a {
   opacity: 1;
   transform: translateY(0);
 }
+
+@media (max-width: 640px) {
+  html {
+    font-size: 15px;
+  }
+  
+  .container {
+    width: min(1120px, 88vw);
+  }
+  
+  .section {
+    padding: calc(var(--nav-height) + 48px) 0 72px;
+  }
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+button, a {
+  -webkit-tap-highlight-color: transparent;
+}

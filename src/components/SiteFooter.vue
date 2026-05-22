@@ -30,9 +30,9 @@ function scrollToTop() {
       <div class="footer__grid">
         <div class="footer__brand">
           <a href="/" class="footer__logo" @click.prevent="router.push('/')">
-          <img src="/logo-nobg.png" alt="SWABox Logo" class="footer__logo-icon">
-          <span>SWA<span class="green-text">Box</span></span>
-        </a>
+            <img src="/logo-nobg.png" alt="SWABox Logo" class="footer__logo-icon">
+            <span>SWA<span class="green-text">Box</span></span>
+          </a>
           <p class="footer__desc">
             专为电教委打造的工具箱。
             <br>

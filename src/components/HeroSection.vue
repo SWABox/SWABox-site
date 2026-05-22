@@ -427,10 +427,22 @@ function scrollTo(id) {
 }
 
 @media (max-width: 640px) {
+  .hero__inner {
+    padding: 48px 0 80px;
+  }
+
   .hero__title {
     white-space: normal;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+    word-break: keep-all;
+    font-size: 2rem;
+  }
+
+  .hero__subtitle {
+    font-size: 1.3rem;
+  }
+
+  .hero__desc {
+    font-size: 0.95rem;
   }
 
   .hero__actions {
@@ -438,6 +450,7 @@ function scrollTo(id) {
   }
 
   .btn {
+    width: 100%;
     justify-content: center;
   }
 
@@ -446,15 +459,16 @@ function scrollTo(id) {
   }
 
   .stat {
-    padding: 12px 8px;
+    padding: 14px 10px;
   }
 
   .stat__value {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
 
-  .stat__label {
-    font-size: 0.65rem;
+  .terminal__body {
+    padding: 16px;
+    font-size: 0.85rem;
   }
 }
 </style>

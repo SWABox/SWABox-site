@@ -132,6 +132,7 @@ onUnmounted(() => {
 <style scoped>
 .challenge-page {
   min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -338,17 +339,22 @@ onUnmounted(() => {
 
 @media (max-width: 480px) {
   .challenge-card {
-    padding: 32px 24px;
+    padding: 28px 20px;
   }
 
   .action-area {
     flex-direction: column;
     align-items: flex-start;
+    gap: 12px;
   }
 
   .refresh-btn {
     width: 100%;
     justify-content: center;
+  }
+
+  .provider-note {
+    font-size: 0.75rem;
   }
 }
 </style>
