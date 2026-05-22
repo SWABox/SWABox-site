@@ -1,10 +1,5 @@
 <template>
   <div class="challenge-page">
-    <div class="dev-panel" v-if="isDevelopment">
-      <span class="dev-badge">开发模式</span>
-      <button @click="handleSkip" class="dev-btn">跳过验证</button>
-    </div>
-
     <div class="challenge-container">
       <div class="challenge-card">
         <div class="challenge-header">
@@ -64,7 +59,6 @@ import { ref, onMounted, onUnmounted } from 'vue'
 const emit = defineEmits(['verified', 'error'])
 
 const sitekey = import.meta.env.VITE_TURNSTILE_SITE_KEY
-const isDevelopment = import.meta.env.DEV
 
 const isLoaded = ref(false)
 const isRefreshing = ref(false)
@@ -117,12 +111,6 @@ function handleRefresh() {
   setTimeout(() => { isRefreshing.value = false }, 800)
 }
 
-function handleSkip() {
-  console.log('开发模式：跳过人机验证')
-  const fakeToken = 'dev-mode-fake-token-' + Date.now()
-  emit('verified', fakeToken)
-}
-
 onMounted(() => {
   const checkAndRender = () => {
     if (window.turnstile) {
@@ -171,48 +159,6 @@ onUnmounted(() => {
   z-index: -1;
   opacity: 0.35;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-}
-
-.dev-panel {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-default);
-  padding: 8px 12px;
-  border-radius: var(--radius-md);
-  z-index: 1000;
-}
-
-.dev-badge {
-  background: var(--green-glow);
-  color: var(--green-primary);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 999px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.dev-btn {
-  background: transparent;
-  color: var(--text-secondary);
-  border: none;
-  padding: 6px 12px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  border-radius: var(--radius-sm);
-  transition: all 0.2s;
-}
-
-.dev-btn:hover {
-  background: var(--bg-hover);
-  color: var(--green-primary);
 }
 
 .challenge-container {
