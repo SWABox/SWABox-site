@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
+import Privacy from '../views/Privacy.vue';
+import Terms from '../views/Terms.vue';
 
 // 定义路由
 const routes = [
@@ -8,13 +10,16 @@ path: '/',
 name: 'Home',
 component: Home,
 },
-// 你可以在此添加其他路由，例如：
-// {
-//   path: '/docs',
-//   name: 'Docs',
-//   component: () => import('../views/Docs.vue'), // 懒加载
-//   meta: { requiresAuth: true } // 标记此路由需要验证
-// },
+{
+path: '/privacy',
+name: 'Privacy',
+component: Privacy,
+},
+{
+path: '/terms',
+name: 'Terms',
+component: Terms,
+},
 ];
 
 // 创建路由实例
