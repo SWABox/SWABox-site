@@ -27,6 +27,16 @@ const router = createRouter({
 // 使用 HTML5 历史模式
 history: createWebHistory('/'), // 如果你的网站部署在子路径，例如 '/my-app/'，则需要调整此处
 routes,
+// 配置滚动行为
+scrollBehavior(to, from, savedPosition) {
+  // 如果有保存的位置（例如前进/后退按钮），则滚动到该位置
+  if (savedPosition) {
+    return savedPosition;
+  } else {
+    // 否则滚动到页面顶部
+    return { top: 0, left: 0, behavior: 'smooth' };
+  }
+},
 });
 
 // 全局前置守卫

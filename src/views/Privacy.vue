@@ -59,8 +59,14 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue';
 import NavBar from '../components/NavBar.vue';
 import SiteFooter from '../components/SiteFooter.vue';
+
+// 页面挂载时滚动到顶部
+onMounted(() => {
+  window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+});
 </script>
 
 <style scoped>
