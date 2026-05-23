@@ -91,8 +91,8 @@ onMounted(() => {
 
 <style scoped>
 .features__header {
-  margin-bottom: 64px;
-  max-width: 560px;
+  margin-bottom: 72px;
+  max-width: 600px;
 }
 
 .section-title {
@@ -109,16 +109,31 @@ onMounted(() => {
 .features__grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: 16px;
+  gap: 20px;
 }
 
 .feature-card {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  padding: 28px;
-  transition: all 0.25s;
+  padding: 32px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   grid-column: span 4;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--green-primary), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
 .feature-card--wide {
@@ -128,38 +143,45 @@ onMounted(() => {
 .feature-card:hover {
   border-color: var(--border-default);
   background: var(--bg-hover);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.feature-card:hover::before {
+  opacity: 1;
 }
 
 .feature-card__icon {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--green-glow);
   border-radius: var(--radius-md);
   color: var(--green-primary);
-  margin-bottom: 20px;
-  transition: all 0.25s;
+  margin-bottom: 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .feature-card:hover .feature-card__icon {
   background: var(--green-primary);
   color: #000;
+  transform: scale(1.1);
 }
 
 .feature-card__title {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   letter-spacing: -0.01em;
 }
 
 .feature-card__desc {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 @media (max-width: 900px) {
@@ -179,6 +201,7 @@ onMounted(() => {
 @media (max-width: 640px) {
   .features__grid {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .feature-card,

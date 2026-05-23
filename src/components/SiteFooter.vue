@@ -83,30 +83,45 @@ function scrollToTop() {
 <style scoped>
 .footer {
   border-top: 1px solid var(--border-subtle);
-  padding: 64px 0 32px;
+  padding: 80px 0 40px;
   margin-top: 48px;
+  position: relative;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--green-primary), transparent);
+  opacity: 0.3;
 }
 
 .footer__grid {
   display: grid;
   grid-template-columns: 1.5fr 2.5fr;
-  gap: 64px;
-  padding-bottom: 48px;
+  gap: 80px;
+  padding-bottom: 56px;
   border-bottom: 1px solid var(--border-subtle);
 }
 
 .footer__brand {
-  max-width: 280px;
+  max-width: 300px;
 }
 
 .footer__logo {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   font-weight: 700;
-  font-size: 1.2rem;
+  font-size: 1.15rem;
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
   color: var(--text-primary);
   margin-bottom: 16px;
+  cursor: pointer;
   transition: opacity 0.2s;
 }
 
@@ -115,13 +130,13 @@ function scrollToTop() {
 }
 
 .footer__logo-icon {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
 }
 
 .footer__desc {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--text-muted);
   line-height: 1.7;
 }

@@ -347,14 +347,5 @@ onUnmounted(() => {
     align-items: flex-start;
     gap: 12px;
   }
-
-  .refresh-btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .provider-note {
-    font-size: 0.75rem;
-  }
 }
 </style>

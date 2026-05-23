@@ -4,6 +4,7 @@ import { ref, onMounted, computed } from 'vue'
 const titleText = ref('')
 const fullTitle = '编程语言是用来思考的'
 const isTyping = ref(true)
+const showTitle = ref(false)
 
 const titlePart1 = computed(() => {
   return titleText.value.slice(0, 7)
@@ -19,6 +20,7 @@ const titlePart3 = computed(() => {
 
 onMounted(() => {
   let index = 0
+  showTitle.value = true
   const typeInterval = setInterval(() => {
     if (index < fullTitle.length) {
       titleText.value += fullTitle.charAt(index)
@@ -41,7 +43,7 @@ function scrollTo(id) {
       <div class="hero__main">
         <p class="hero__label">// 专为电教委</p>
 
-        <h1 class="hero__title">
+        <h1 class="hero__title" :class="{ visible: showTitle }">
           <span class="title-typed">
             {{ titlePart1 }}
             <span class="green-text">{{ titlePart2 }}</span>
@@ -149,43 +151,77 @@ function scrollTo(id) {
   justify-content: center;
   position: relative;
   padding-top: var(--nav-height);
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -20%;
+  width: 80%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+  animation: float 20s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(5%, 5%); }
 }
 
 .hero__inner {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
+  grid-template-columns: 1.15fr 1fr;
   gap: 80px;
   align-items: center;
-  padding: 60px 0;
+  padding: 80px 0;
 }
 
 .hero__main {
-  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+  animation: fadeIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .hero__label {
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
-  margin-bottom: 20px;
-  letter-spacing: 0.02em;
+  margin-bottom: 24px;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero__label::before {
+  content: '';
+  width: 24px;
+  height: 2px;
+  background: var(--green-primary);
+  border-radius: 2px;
 }
 
 .hero__title {
-  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
   font-weight: 700;
-  line-height: 1.15;
+  line-height: 1.12;
   letter-spacing: -0.04em;
   color: var(--text-primary);
-  margin-bottom: 8px;
-  display: inline-flex;
-  align-items: baseline;
-  white-space: nowrap;
+  margin-bottom: 12px;
+  display: block;
+  min-height: 1.12em;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.hero__title.visible {
+  opacity: 1;
 }
 
 .title-typed {
@@ -226,31 +262,37 @@ function scrollTo(id) {
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 16px;
   margin-top: 40px;
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   padding: 14px 28px;
   font-weight: 600;
   font-size: 0.95rem;
   border-radius: var(--radius-md);
   border: none;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn--primary {
   background: var(--green-primary);
   color: #000;
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
 }
 
 .btn--primary:hover {
   background: var(--green-light);
   transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+}
+
+.btn--primary:active {
+  transform: translateY(0);
 }
 
 .btn--ghost {
@@ -262,6 +304,7 @@ function scrollTo(id) {
 .btn--ghost:hover {
   background: var(--bg-hover);
   border-color: var(--green-primary);
+  box-shadow: var(--shadow-glow);
 }
 
 .hero__meta {

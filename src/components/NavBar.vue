@@ -52,6 +52,7 @@ const links = [
         <a
           href="https://github.com/liyunhan177/SWABox"
           target="_blank"
+          rel="noopener noreferrer"
           class="nav__github"
         >
           <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
@@ -78,13 +79,14 @@ const links = [
         <a
           v-for="l in links"
           :key="l.label"
-          :href="l.href"
+          href="#"
           class="nav__link nav__link--mobile"
           @click.prevent="handleLinkClick(l.href)"
         >{{ l.label }}</a>
         <a
           href="https://github.com/liyunhan177/SWABox"
           target="_blank"
+          rel="noopener noreferrer"
           class="nav__github nav__github--mobile"
         >
           <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
@@ -149,19 +151,20 @@ const links = [
 .nav__links {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
 .nav__link {
-  padding: 12px 16px;
+  padding: 10px 16px;
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--text-secondary);
   border-radius: var(--radius-sm);
-  transition: all 0.2s;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   min-height: 44px;
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 
 .nav__link:hover {
@@ -169,26 +172,36 @@ const links = [
   background: var(--bg-hover);
 }
 
+.nav__link:active {
+  transform: scale(0.98);
+}
+
 .nav__github {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 12px 16px;
+  gap: 8px;
+  padding: 10px 18px;
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--text-primary);
   background: var(--bg-surface);
   border: 1px solid var(--border-default);
-  border-radius: var(--radius-sm);
-  margin-left: 8px;
-  transition: all 0.2s;
+  border-radius: var(--radius-md);
+  margin-left: 12px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   min-height: 44px;
+  cursor: pointer;
 }
 
 .nav__github:hover {
   background: var(--bg-hover);
   border-color: var(--green-primary);
   color: var(--green-primary);
+  box-shadow: var(--shadow-glow);
+}
+
+.nav__github:active {
+  transform: scale(0.98);
 }
 
 .nav__github svg {
@@ -210,11 +223,11 @@ const links = [
 
 .nav__menu-btn span {
   display: block;
-  width: 22px;
+  width: 24px;
   height: 2px;
   background: var(--text-primary);
   border-radius: 2px;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav__menu-btn--active span:nth-child(1) {
@@ -235,7 +248,7 @@ const links = [
   top: var(--nav-height);
   left: 0;
   right: 0;
-  background: rgba(10, 10, 10, 0.98);
+  background: rgba(10, 10, 15, 0.98);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-subtle);
   overflow: hidden;
