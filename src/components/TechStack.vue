@@ -5,7 +5,7 @@ const stacks = [
   { label: 'Python 3', desc: '核心语言' },
   { label: 'PySide6', desc: 'GUI 框架' },
   { label: 'Logging', desc: '日志系统' },
-  { label: 'Windows', desc: '目标平台' },
+  { label: 'pywifi', desc: '网络检测' },
 ]
 
 onMounted(() => {

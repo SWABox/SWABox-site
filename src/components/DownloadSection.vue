@@ -1,9 +1,10 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const release = ref(null)
 const loading = ref(true)
 const error = ref(false)
+let refreshInterval = null
 
 const WinLogo = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
   <rect x="2" y="2" width="9" height="9" rx="1.5" fill="#f25022"/>
@@ -16,7 +17,7 @@ async function fetchRelease() {
   try {
     const response = await fetch(
       'https://cdn.jsdelivr.net/gh/liyunhan177/SWABox@master/version.json',
-      { headers: { 'Accept': 'application/json' } }
+      { headers: { 'Accept': 'application/json' }, cache: 'no-cache' }
     )
 
     if (!response.ok) {
@@ -25,8 +26,8 @@ async function fetchRelease() {
       return
     }
 
-    const data = await response.json()
-    release.value = data
+    release.value = await response.json()
+    error.value = false
   } catch (err) {
     error.value = true
   } finally {
@@ -34,7 +35,16 @@ async function fetchRelease() {
   }
 }
 
-onMounted(fetchRelease)
+onMounted(() => {
+  fetchRelease()
+  refreshInterval = setInterval(fetchRelease, 60000)
+})
+
+onUnmounted(() => {
+  if (refreshInterval) {
+    clearInterval(refreshInterval)
+  }
+})
 </script>
 
 <template>
