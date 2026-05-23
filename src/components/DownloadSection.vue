@@ -17,10 +17,10 @@ async function fetchRelease() {
   try {
     const timestamp = Date.now()
     const response = await fetch(
-      `https://cdn.jsdelivr.net/gh/liyunhan177/SWABox@master/version.json?_=${timestamp}`,
+      `https://api.github.com/repos/liyunhan177/SWABox/releases/latest?_=${timestamp}`,
       {
         headers: {
-          'Accept': 'application/json'
+          'Accept': 'application/vnd.github.v3+json'
         },
         mode: 'cors',
         credentials: 'omit'
@@ -31,7 +31,14 @@ async function fetchRelease() {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
-    release.value = await response.json()
+    const data = await response.json()
+    const winAsset = data.assets.find(asset => asset.name.endsWith('.exe'))
+    
+    release.value = {
+      version: data.tag_name.replace('v', ''),
+      date: data.published_at.split('T')[0],
+      windows: winAsset ? winAsset.browser_download_url : data.html_url
+    }
     error.value = false
   } catch (err) {
     console.error('Failed to fetch version:', err)
