@@ -15,20 +15,29 @@ const WinLogo = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" wid
 
 async function fetchRelease() {
   try {
+    const timestamp = Date.now()
     const response = await fetch(
-      'https://cdn.jsdelivr.net/gh/liyunhan177/SWABox@master/version.json',
-      { headers: { 'Accept': 'application/json' }, cache: 'no-cache' }
+      `https://cdn.jsdelivr.net/gh/liyunhan177/SWABox@master/version.json?_=${timestamp}`,
+      {
+        headers: {
+          'Accept': 'application/json',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        },
+        mode: 'cors',
+        credentials: 'omit'
+      }
     )
 
     if (!response.ok) {
-      error.value = true
-      loading.value = false
-      return
+      throw new Error(`HTTP error! status: ${response.status}`)
     }
 
     release.value = await response.json()
     error.value = false
   } catch (err) {
+    console.error('Failed to fetch version:', err)
     error.value = true
   } finally {
     loading.value = false
@@ -86,7 +95,7 @@ onUnmounted(() => {
                 <polyline points="7 10 12 15 17 10"/>
                 <line x1="12" y1="15" x2="12" y2="3"/>
               </svg>
-              下载 {{ release.version }}.exe
+              下载 v{{ release.version }}
             </a>
           </div>
 
