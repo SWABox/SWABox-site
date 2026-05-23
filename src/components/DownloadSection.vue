@@ -20,10 +20,7 @@ async function fetchRelease() {
       `https://cdn.jsdelivr.net/gh/liyunhan177/SWABox@master/version.json?_=${timestamp}`,
       {
         headers: {
-          'Accept': 'application/json',
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
+          'Accept': 'application/json'
         },
         mode: 'cors',
         credentials: 'omit'
