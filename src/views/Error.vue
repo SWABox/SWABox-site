@@ -100,7 +100,7 @@ const errorData = computed(() => {
           <span class="iconify" data-icon="mdi:home-outline" data-inline="false"></span>
           返回首页
         </button>
-        <a href="https://github.com/liyunhan177/SWABox" target="_blank" class="btn btn-secondary">
+        <a href="https://github.com/liyunhan177/SWABox" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
           <span class="iconify" data-icon="mdi:github" data-inline="false"></span>
           查看项目仓库
         </a>

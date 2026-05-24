@@ -9,7 +9,7 @@
 
           <div class="mit-highlight">
             <strong>MIT 许可证适用：</strong> 本软件（SWABox）受 MIT 许可证保护。除本用户协议外，您对软件的使用还受限于
-            <a href="https://opensource.org/licenses/MIT" target="_blank" class="url">MIT 许可证</a>
+            <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer" class="url">MIT 许可证</a>
             的条款。简而言之：您可以自由使用，但需承担风险，且必须保留版权声明。
           </div>
 
@@ -29,7 +29,7 @@
           <h2>3. 用户权利与义务</h2>
           <p><strong>3.1 开源权利</strong></p>
           <p>根据 MIT 许可证，您有权运行、复制、分发、研究和改进本项目软件。源代码可在
-            <a href="https://github.com/liyunhan177/SWABox" target="_blank" class="url">项目仓库</a>
+            <a href="https://github.com/liyunhan177/SWABox" target="_blank" rel="noopener noreferrer" class="url">项目仓库</a>
             中获取。</p>
           <p><strong>3.2 使用限制</strong></p>
           <ul>
@@ -55,14 +55,14 @@
 
           <h2>6. 协议变更</h2>
           <p>开发者有权根据需要随时更新本协议。重大变更将通过
-            <a href="https://github.com/liyunhan177/SWABox-site" target="_blank" class="url">网站仓库</a>
+            <a href="https://github.com/liyunhan177/SWABox-site" target="_blank" rel="noopener noreferrer" class="url">网站仓库</a>
             的 Release Notes 或 Issue 通知。建议您定期查阅本页面。</p>
 
           <h2>7. 联系方式</h2>
           <p>如有任何疑问或需要获得商标授权，请通过以下方式联系：</p>
           <ul>
             <li>GitHub Issues：
-              <a href="https://github.com/liyunhan177/SWABox/issues" target="_blank" class="url">项目 Issues 页面</a>
+              <a href="https://github.com/liyunhan177/SWABox/issues" target="_blank" rel="noopener noreferrer" class="url">项目 Issues 页面</a>
             </li>
             <li>邮箱：<a href="mailto:content@swabox.cc.cd" class="url">content@swabox.cc.cd</a></li>
           </ul>

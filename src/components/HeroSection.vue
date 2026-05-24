@@ -72,7 +72,7 @@ function scrollTo(id) {
             下载 Windows 版
           </button>
 
-          <a href="https://github.com/liyunhan177/SWABox" target="_blank" class="btn btn--ghost">
+          <a href="https://github.com/liyunhan177/SWABox" target="_blank" rel="noopener noreferrer" class="btn btn--ghost">
             查看源码
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
               <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>

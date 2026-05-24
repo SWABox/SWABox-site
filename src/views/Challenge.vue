@@ -8,16 +8,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { inject } from 'vue';
 import { useRouter } from 'vue-router';
 import TurnstileChallenge from '../components/TurnstileChallenge.vue';
 
 const router = useRouter();
+const showToast = inject('showToast');
 
 async function handleTurnstileSuccess(token) {
   console.log('🔄 接收到验证 Token，正在验证...');
   
-  // 开发环境：直接验证通过
   if (import.meta.env.DEV) {
     console.log('✅ 开发环境验证成功！');
     localStorage.setItem('swabox_verified', JSON.stringify({
@@ -43,17 +43,19 @@ async function handleTurnstileSuccess(token) {
         }));
         router.push('/');
       } else {
-        alert(`验证失败: ${result.message || '请重试'}`);
+        const errorMsg = result.message || '请重试';
+        showToast(`验证失败: ${errorMsg}`, 'error');
       }
     } catch (networkError) {
       console.error('网络请求失败:', networkError);
-      alert('验证服务暂时不可用，请检查网络。');
+      showToast('验证服务暂时不可用，请检查网络。', 'error');
     }
   }
 }
 
 function handleTurnstileError(errorMsg) {
   console.warn('验证过程出错:', errorMsg);
+  showToast(`验证过程出错: ${errorMsg}`, 'error');
 }
 </script>
 

@@ -50,8 +50,8 @@ function scrollToTop() {
 
           <div class="footer__col">
             <h4 class="footer__col-title">链接</h4>
-            <a href="https://github.com/liyunhan177/SWABox" target="_blank">GitHub</a>
-            <a href="https://github.com/liyunhan177/SWABox/releases" target="_blank">Releases</a>
+            <a href="https://github.com/liyunhan177/SWABox" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://github.com/liyunhan177/SWABox/releases" target="_blank" rel="noopener noreferrer">Releases</a>
           </div>
 
           <div class="footer__col">

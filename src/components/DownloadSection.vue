@@ -93,7 +93,7 @@ onUnmounted(() => {
               <span class="download__version-date">{{ release.date }}</span>
             </div>
 
-            <a :href="release.windows" target="_blank" class="download__btn">
+            <a :href="release.windows" target="_blank" rel="noopener noreferrer" class="download__btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                 <polyline points="7 10 12 15 17 10"/>
@@ -108,7 +108,7 @@ onUnmounted(() => {
               <span class="download__version-label">最新版本</span>
             </div>
 
-            <a href="https://github.com/liyunhan177/SWABox/releases" target="_blank" class="download__btn">
+            <a href="https://github.com/liyunhan177/SWABox/releases" target="_blank" rel="noopener noreferrer" class="download__btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
                 <polyline points="15 3 21 3 21 9"/>

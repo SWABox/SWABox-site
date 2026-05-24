@@ -15,7 +15,7 @@
           <p>欢迎访问 SWABox 网站（以下简称“本站”）。本隐私政策旨在向您说明我们在您使用本站服务时，如何处理您的相关信息。我们严格遵守中国《个人信息保护法》及通用数据保护规范，尽力确保数据处理透明、最小化。</p>
 
           <h2>1. 开源与数据处理的独立性</h2>
-          <p>SWABox 项目源代码完全托管于 <a href="https://github.com/liyunhan177/SWABox" target="_blank" class="url">GitHub</a>，采用 MIT 许可证。本隐私政策仅适用于本站（域名 swabox.cc.cd）的网站服务，与您本地运行的 SWABox 软件无关。我们承诺：</p>
+          <p>SWABox 项目源代码完全托管于 <a href="https://github.com/liyunhan177/SWABox" target="_blank" rel="noopener noreferrer" class="url">GitHub</a>，采用 MIT 许可证。本隐私政策仅适用于本站（域名 swabox.cc.cd）的网站服务，与您本地运行的 SWABox 软件无关。我们承诺：</p>
           <ul>
             <li><strong>代码透明</strong>：软件本体无任何隐蔽数据收集代码或后门。</li>
             <li><strong>数据分离</strong>：本政策所述的数据处理（如 Cloudflare 托管、Turnstile 验证、Web Analytics）仅发生在网站服务端，您本地运行软件时产生的数据完全由您自己控制。</li>
@@ -59,7 +59,7 @@
 
           <h2>3. Cloudflare Turnstile 安全验证</h2>
           <p>本站全站启用 <strong>Cloudflare Turnstile 托管验证</strong>（自动切换无交互与手动验证），作为防御恶意攻击的必要安全措施。其法律基础为《个人信息保护法》第十三条第（二）款规定的“为订立、履行合同所必需”或“为维护合法权益所必需”。</p>
-          <p>Cloudflare 作为数据处理者可能会处理上述技术信号，但承诺：<strong>不将 Turnstile 数据用于广告投放、用户画像或跨站追踪</strong>，数据留存一般不超过数周。详见 <a href="https://www.cloudflare-cn.com/turnstile-privacy-policy/" target="_blank" class="url">Cloudflare Turnstile 隐私政策</a>。</p>
+          <p>Cloudflare 作为数据处理者可能会处理上述技术信号，但承诺：<strong>不将 Turnstile 数据用于广告投放、用户画像或跨站追踪</strong>，数据留存一般不超过数周。详见 <a href="https://www.cloudflare-cn.com/turnstile-privacy-policy/" target="_blank" rel="noopener noreferrer" class="url">Cloudflare Turnstile 隐私政策</a>。</p>
 
           <h2>4. Cloudflare Pages 托管平台</h2>
           <p>本站托管于 Cloudflare Pages，利用其全球 CDN 网络加速访问。作为数据处理者，Cloudflare 会自动记录必要的技术信息以实现加速和安全防护，该信息仅短暂留存。</p>
@@ -71,7 +71,7 @@
             <li>收集的信息仅为聚合后的<strong>匿名统计数据</strong>（如页面浏览量、引用来源、国家/地区级别地理信息），不包含个人标识符，无法识别特定用户。</li>
             <li>仅用于了解网站使用状况、优化服务，<strong>绝不用于广告或用户画像</strong>。</li>
           </ul>
-          <p>Cloudflare 为此服务的数据处理者，其隐私政策同样适用于本服务。详情参阅 <a href="https://www.cloudflare-cn.com/privacypolicy/" target="_blank" class="url">Cloudflare 隐私政策</a>。</p>
+          <p>Cloudflare 为此服务的数据处理者，其隐私政策同样适用于本服务。详情参阅 <a href="https://www.cloudflare-cn.com/privacypolicy/" target="_blank" rel="noopener noreferrer" class="url">Cloudflare 隐私政策</a>。</p>
 
           <h2>6. 通信与邮件处理</h2>
           <p>若您通过 <strong>content@swabox.cc.cd</strong> 联系我们，邮件将通过 Cloudflare Email Routing 转发。我们仅将您提供的信息用于回复咨询，不作其他用途。</p>
@@ -79,18 +79,18 @@
           <h2>7. 您的权利</h2>
           <p>根据中国《个人信息保护法》及相关法律，您享有以下权利：</p>
           <ul>
-            <li><strong>知情权与查阅权</strong>：您有权知晓我们如何处理您的信息。由于本站不直接收集个人信息，且源代码完全公开，您可通过审查 <a href="https://github.com/liyunhan177/SWABox" target="_blank" class="url">项目仓库</a> 代码自行核实数据处理逻辑。</li>
+            <li><strong>知情权与查阅权</strong>：您有权知晓我们如何处理您的信息。由于本站不直接收集个人信息，且源代码完全公开，您可通过审查 <a href="https://github.com/liyunhan177/SWABox" target="_blank" rel="noopener noreferrer" class="url">项目仓库</a> 代码自行核实数据处理逻辑。</li>
             <li><strong>修改权</strong>：您可在遵守 MIT 许可证的前提下，自行部署或修改软件，以改变数据处理方式。</li>
             <li><strong>补充与删除权</strong>：若您发现涉及您的信息不完整或有误，或认为处理目的已实现、我们已无必要处理您的相关信息，您有权要求我们进行补充或删除。我们将在十五个工作日内响应您的请求。</li>
           </ul>
 
           <h2>8. 政策更新</h2>
-          <p>我们可能会更新本隐私政策。重大变更将通过 <a href="https://github.com/liyunhan177/SWABox-site" target="_blank" class="url">网站仓库</a> 的 Release Notes 或 Issue 通知。</p>
+          <li>我们可能会更新本隐私政策。重大变更将通过 <a href="https://github.com/liyunhan177/SWABox-site" target="_blank" rel="noopener noreferrer" class="url">网站仓库</a> 的 Release Notes 或 Issue 通知。</li>
 
           <h2>9. 联系我们</h2>
           <p>如有任何疑问或欲行使上述权利，请通过以下方式联系：</p>
           <ul>
-            <li>GitHub Issues：<a href="https://github.com/liyunhan177/SWABox-site/issues" target="_blank" class="url">SWABox-site Issues</a></li>
+            <li>GitHub Issues：<a href="https://github.com/liyunhan177/SWABox-site/issues" target="_blank" rel="noopener noreferrer" class="url">SWABox-site Issues</a></li>
             <li>邮箱：<a href="mailto:content@swabox.cc.cd" class="url">content@swabox.cc.cd</a></li>
           </ul>
 

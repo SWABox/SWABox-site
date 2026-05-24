@@ -78,9 +78,13 @@ router.beforeEach((to, from, next) => {
   let isVerified = false;
 
   if (savedVerification) {
-    const { timestamp, valid } = JSON.parse(savedVerification);
-    const isExpired = Date.now() - timestamp > 24 * 60 * 60 * 1000; // 24小时过期
-    isVerified = valid && !isExpired;
+    try {
+      const { timestamp, valid } = JSON.parse(savedVerification);
+      const isExpired = Date.now() - timestamp > 24 * 60 * 60 * 1000;
+      isVerified = valid && !isExpired;
+    } catch {
+      isVerified = false;
+    }
   }
 
   // 3. 逻辑判断
