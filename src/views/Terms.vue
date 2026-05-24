@@ -8,33 +8,64 @@
           <p class="effective-date"><strong>生效日期：2026年5月20日</strong></p>
 
           <div class="mit-highlight">
-            <strong>MIT 许可证适用：</strong> 本软件（SWABox）受 MIT 许可证保护。除本用户协议外，您对软件的使用还受限于 <a href="https://opensource.org/licenses/MIT" target="_blank">MIT 许可证</a> 的条款。简而言之：您可以自由使用，但需承担风险，且必须保留版权声明。
+            <strong>MIT 许可证适用：</strong> 本软件（SWABox）受 MIT 许可证保护。除本用户协议外，您对软件的使用还受限于
+            <a href="https://opensource.org/licenses/MIT" target="_blank" class="url">MIT 许可证</a>
+            的条款。简而言之：您可以自由使用，但需承担风险，且必须保留版权声明。
           </div>
 
-          <h2>1. 协议范围</h2>
-          <p>本协议适用于您对本网站及 SWABox 软件的使用行为。本服务托管于 Cloudflare 平台。</p>
+          <h2>1. 服务说明与协议范围</h2>
+          <p>本协议适用于您对本网站及 SWABox 软件的使用行为。网站托管于 Cloudflare Pages，并启用了以下第三方服务：</p>
+          <ul>
+            <li><strong>Cloudflare Turnstile</strong>：人机验证，用于防御恶意机器人攻击。</li>
+            <li><strong>Cloudflare Web Analytics</strong>：匿名访问统计，不设置 Cookie，不追踪个人用户，仅用于了解网站使用情况。</li>
+            <li><strong>Cloudflare Email Routing</strong>：邮件转发服务。</li>
+          </ul>
+          <p>使用本网站即表示您已知悉并同意接受上述服务的运作方式。详细数据处理说明请参阅我们的
+            <a href="/privacy" class="url">隐私政策</a>。</p>
 
           <h2>2. 人机验证机制</h2>
-          <p>本服务采用 Cloudflare Turnstile 托管模式（自动切换无交互与手动验证）。您同意配合完成必要的验证流程以确保服务安全。</p>
+          <p>本网站采用 <strong>Cloudflare Turnstile 托管验证</strong>（自动切换无交互与手动验证）。您同意配合完成必要的验证流程，并遵守 Cloudflare 的相关服务条款，以确保网站安全运行。</p>
 
           <h2>3. 用户权利与义务</h2>
-          <p>3.1 <strong>开源权利</strong>：根据 MIT 协议，您有权运行、复制、分发、研究和改进本软件。</p>
-          <p>3.2 <strong>使用限制</strong>：您不得将本软件用于非法用途，不得试图绕过 Cloudflare 的安全防护机制。</p>
-          <p>3.3 <strong>商标保留</strong>：MIT 许可证授予您代码使用权，但不授予您使用 SWABox 名称、Logo 或品牌标识进行商业推广的权利，除非获得明确授权。</p>
+          <p><strong>3.1 开源权利</strong></p>
+          <p>根据 MIT 许可证，您有权运行、复制、分发、研究和改进本项目软件。源代码可在
+            <a href="https://github.com/liyunhan177/SWABox" target="_blank" class="url">项目仓库</a>
+            中获取。</p>
+          <p><strong>3.2 使用限制</strong></p>
+          <ul>
+            <li>不得将本项目软件用于非法活动或任何违反中华人民共和国法律法规的用途。</li>
+            <li>不得试图绕过、破坏或干扰 Cloudflare 的安全防护机制（包括 Turnstile 和 WAF）。</li>
+            <li>不得利用本项目软件或本网站进行任何可能损害服务稳定性或影响其他用户的行为。</li>
+          </ul>
+          <p><strong>3.3 商标与品牌</strong></p>
+          <p>MIT 许可证仅授予代码的使用和分发权，不授予您使用 SWABox 名称、Logo 或品牌标识进行商业推广或暗示官方背书的权利，除非获得开发者明确书面授权。</p>
 
           <h2>4. 知识产权</h2>
-          <p>4.1 软件代码：受 MIT 许可证保护，版权归开发者所有。</p>
-          <p>4.2 网站内容：包括设计、文案、Logo 等，保留所有权利，未经允许不得用于其他项目。</p>
+          <p><strong>4.1 软件代码</strong>：受 MIT 许可证保护，版权归开发者所有。您需保留原始版权声明。</p>
+          <p><strong>4.2 网站内容</strong>：包括但不限于设计、文案、Logo、图片等，保留所有权利。未经开发者允许，不得复制、修改或用于其他项目。</p>
 
           <h2>5. 免责声明（MIT 标准条款）</h2>
-          <p><strong>本软件按“原样”提供，没有任何明示或暗示的担保。</strong>作者或版权持有人不对任何索赔、损害或其他责任负责，无论这些责任是因合同、侵权还是其他原因引起的，与软件的使用或使用或其他交易有关。</p>
-          <p>鉴于本项目为开源免费软件，开发者对因使用本软件（包括网站访问受阻、数据丢失等）造成的直接或间接损失不承担责任。</p>
+          <p><strong>本软件及网站服务按“原样”提供，没有任何形式的明示或暗示担保。</strong>在适用法律允许的最大范围内，作者或版权持有人不对任何索赔、损害或其他责任负责，无论这些责任是因合同、侵权还是其他原因引起的，与软件或服务的使用或无法使用有关。</p>
+          <p>鉴于本项目为开源免费软件，开发者不对以下情况造成的直接或间接损失承担责任：</p>
+          <ul>
+            <li>网站访问受阻、服务中断或数据丢失。</li>
+            <li>因第三方服务（如 Cloudflare）导致的任何问题。</li>
+            <li>因使用或无法使用本软件而产生的任何后果。</li>
+          </ul>
 
           <h2>6. 协议变更</h2>
-          <p>开发者有权随时更新本协议。对于开源用户，建议关注 GitHub 仓库的动态。</p>
+          <p>开发者有权根据需要随时更新本协议。重大变更将通过
+            <a href="https://github.com/liyunhan177/SWABox-site" target="_blank" class="url">网站仓库</a>
+            的 Release Notes 或 Issue 通知。建议您定期查阅本页面。</p>
 
-          <h2>7. 联系我们</h2>
-          <p>GitHub Issues：<a href="https://github.com/liyunhan177/SWABox/issues" target="_blank">项目 Issues 页面</a></p>
+          <h2>7. 联系方式</h2>
+          <p>如有任何疑问或需要获得商标授权，请通过以下方式联系：</p>
+          <ul>
+            <li>GitHub Issues：
+              <a href="https://github.com/liyunhan177/SWABox/issues" target="_blank" class="url">项目 Issues 页面</a>
+            </li>
+            <li>邮箱：<a href="mailto:content@swabox.cc.cd" class="url">content@swabox.cc.cd</a></li>
+          </ul>
 
           <router-link to="/" class="back-link">← 返回 SWABox 首页</router-link>
         </div>
@@ -49,7 +80,6 @@ import { onMounted } from 'vue';
 import NavBar from '../components/NavBar.vue';
 import SiteFooter from '../components/SiteFooter.vue';
 
-// 页面挂载时滚动到顶部
 onMounted(() => {
   window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 });
@@ -122,14 +152,15 @@ li {
   margin: 0.5rem 0;
 }
 
-a {
-  color: var(--accent);
+/* 外链统一绿色样式 */
+a.url {
+  color: var(--green-primary);
   text-decoration: none;
   transition: color 0.2s;
 }
 
-a:hover {
-  color: var(--accent2);
+a.url:hover {
+  color: var(--green-primary);
   text-decoration: underline;
 }
 

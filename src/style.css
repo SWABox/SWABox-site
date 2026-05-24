@@ -32,9 +32,12 @@
   --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
   --shadow-glow: 0 0 30px rgba(34, 197, 94, 0.15);
+  --shadow-glow-strong: 0 0 50px rgba(34, 197, 94, 0.3);
 
   --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', ui-monospace, monospace;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-heading: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-sans: var(--font-body);
 }
 
 *, *::before, *::after {

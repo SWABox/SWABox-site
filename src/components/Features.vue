@@ -113,11 +113,11 @@ onMounted(() => {
 }
 
 .feature-card {
-  background: var(--bg-surface);
+  background: linear-gradient(135deg, var(--bg-surface) 0%, rgba(24, 24, 31, 0.6) 100%);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 32px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   grid-column: span 4;
   cursor: pointer;
   position: relative;
@@ -130,10 +130,24 @@ onMounted(() => {
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
+  height: 2px;
   background: linear-gradient(90deg, transparent, var(--green-primary), transparent);
   opacity: 0;
   transition: opacity 0.3s;
+}
+
+.feature-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(34, 197, 94, 0.08) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.feature-card:hover::after {
+  opacity: 1;
 }
 
 .feature-card--wide {
@@ -141,10 +155,12 @@ onMounted(() => {
 }
 
 .feature-card:hover {
-  border-color: var(--border-default);
-  background: var(--bg-hover);
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
+  border-color: rgba(34, 197, 94, 0.3);
+  background: linear-gradient(135deg, var(--bg-hover) 0%, rgba(31, 31, 42, 0.8) 100%);
+  transform: translateY(-6px);
+  box-shadow: 
+    var(--shadow-md),
+    0 0 40px rgba(34, 197, 94, 0.1);
 }
 
 .feature-card:hover::before {
@@ -152,22 +168,24 @@ onMounted(() => {
 }
 
 .feature-card__icon {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--green-glow);
+  background: linear-gradient(135deg, var(--green-glow) 0%, rgba(34, 197, 94, 0.08) 100%);
+  border: 1px solid rgba(34, 197, 94, 0.2);
   border-radius: var(--radius-md);
   color: var(--green-primary);
   margin-bottom: 24px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .feature-card:hover .feature-card__icon {
-  background: var(--green-primary);
+  background: linear-gradient(135deg, var(--green-primary) 0%, var(--green-dim) 100%);
   color: #000;
   transform: scale(1.1);
+  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.3);
 }
 
 .feature-card__title {

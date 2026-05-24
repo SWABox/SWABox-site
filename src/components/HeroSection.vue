@@ -161,9 +161,21 @@ function scrollTo(id) {
   left: -20%;
   width: 80%;
   height: 100%;
-  background: radial-gradient(circle, rgba(34, 197, 94, 0.08) 0%, transparent 60%);
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.12) 0%, transparent 60%);
   pointer-events: none;
   animation: float 20s ease-in-out infinite;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 20%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+  animation: float 25s ease-in-out infinite reverse;
 }
 
 @keyframes float {
@@ -177,6 +189,8 @@ function scrollTo(id) {
   gap: 80px;
   align-items: center;
   padding: 80px 0;
+  position: relative;
+  z-index: 1;
 }
 
 .hero__main {
@@ -203,11 +217,13 @@ function scrollTo(id) {
   content: '';
   width: 24px;
   height: 2px;
-  background: var(--green-primary);
+  background: linear-gradient(90deg, var(--green-primary), var(--green-light));
   border-radius: 2px;
+  box-shadow: 0 0 8px var(--green-primary);
 }
 
 .hero__title {
+  font-family: var(--font-heading);
   font-size: clamp(2.2rem, 5vw, 3.5rem);
   font-weight: 700;
   line-height: 1.12;
@@ -280,15 +296,19 @@ function scrollTo(id) {
 }
 
 .btn--primary {
-  background: var(--green-primary);
+  background: linear-gradient(135deg, var(--green-primary) 0%, var(--green-dim) 100%);
   color: #000;
-  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+  box-shadow: 
+    0 4px 16px rgba(34, 197, 94, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .btn--primary:hover {
-  background: var(--green-light);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+  background: linear-gradient(135deg, var(--green-light) 0%, var(--green-dim) 100%);
+  transform: translateY(-3px);
+  box-shadow: 
+    0 12px 32px rgba(34, 197, 94, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .btn--primary:active {
@@ -331,10 +351,26 @@ function scrollTo(id) {
 }
 
 .hero__terminal {
-  background: var(--bg-elevated);
+  background: linear-gradient(135deg, var(--bg-elevated) 0%, rgba(17, 17, 24, 0.8) 100%);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  position: relative;
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(34, 197, 94, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.hero__terminal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.3), transparent);
 }
 
 .terminal__header {

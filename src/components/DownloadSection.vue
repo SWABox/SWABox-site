@@ -241,20 +241,24 @@ onUnmounted(() => {
   gap: 12px;
   width: 100%;
   padding: 18px 28px;
-  background: var(--green-primary);
+  background: linear-gradient(135deg, var(--green-primary) 0%, var(--green-dim) 100%);
   color: #000;
   font-weight: 600;
   font-size: 1rem;
   border-radius: var(--radius-lg);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+  box-shadow: 
+    0 4px 16px rgba(34, 197, 94, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .download__btn:hover {
-  background: var(--green-light);
+  background: linear-gradient(135deg, var(--green-light) 0%, var(--green-primary) 100%);
   transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+  box-shadow: 
+    0 12px 32px rgba(34, 197, 94, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .download__btn:active {
