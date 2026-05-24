@@ -10,6 +10,9 @@
 
   <!-- 验证通过后的主站内容 -->
   <div v-else class="main-site">
+    <!-- 首次访问弹窗 -->
+    <TermsConsent />
+    
     <NavBar />
     <main>
       <HeroSection />
@@ -32,6 +35,7 @@ import Features from '../components/Features.vue';
 import TechStack from '../components/TechStack.vue';
 import DownloadSection from '../components/DownloadSection.vue';
 import SiteFooter from '../components/SiteFooter.vue';
+import TermsConsent from '../components/TermsConsent.vue';
 
 const router = useRouter();
 const route = useRoute();
