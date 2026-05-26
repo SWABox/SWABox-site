@@ -47,13 +47,6 @@
               {{ isRefreshing ? '刷新中' : '刷新验证' }}
             </button>
           </div>
-          
-          <div class="debug-info">
-            <p class="debug-title">调试信息</p>
-            <p class="debug-item">域名: {{ currentDomain }}</p>
-            <p class="debug-item">Site Key: {{ sitekey }}</p>
-            <p class="debug-item">状态: {{ isLoaded ? '已加载' : '加载中' }}</p>
-          </div>
         </div>
       </div>
     </div>
@@ -70,21 +63,20 @@ const sitekey = import.meta.env.VITE_TURNSTILE_SITE_KEY
 const isLoaded = ref(false)
 const isRefreshing = ref(false)
 const widgetContainer = ref(null)
-const currentDomain = ref(window.location.hostname)
 let widgetId = null
 
 function checkDomainConfiguration() {
   console.log('=== Turnstile 域名诊断 ===')
-  console.log('当前域名:', currentDomain.value)
+  console.log('当前域名:', window.location.hostname)
   console.log('完整 URL:', window.location.href)
   console.log('Site Key:', sitekey)
   
   const commonDomains = ['swabox.cc.cd', 'localhost', '127.0.0.1']
-  const isKnownDomain = commonDomains.some(domain => currentDomain.value.includes(domain))
+  const isKnownDomain = commonDomains.some(domain => window.location.hostname.includes(domain))
   
   if (!isKnownDomain) {
     console.warn('⚠️ 检测到新域名，请确保在 Cloudflare Turnstile 控制台中添加此域名')
-    console.warn('📋 需要添加的域名:', currentDomain.value)
+    console.warn('📋 需要添加的域名:', window.location.hostname)
   } else {
     console.log('✅ 域名在已知列表中')
   }
@@ -386,29 +378,6 @@ onUnmounted(() => {
   border-top-color: currentColor;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
-}
-
-.debug-info {
-  margin-top: 20px;
-  padding: 16px;
-  background: var(--bg-hover);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  font-size: 0.8rem;
-}
-
-.debug-title {
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0 0 12px 0;
-  font-size: 0.85rem;
-}
-
-.debug-item {
-  margin: 6px 0;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  word-break: break-all;
 }
 
 @media (max-width: 480px) {

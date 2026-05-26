@@ -57,12 +57,6 @@ onMounted(() => {
       localStorage.removeItem('swabox_verified'); // 清除过期记录
     }
   }
-// 诊断信息
-  console.log('=== Turnstile 诊断信息 ===');
-  console.log('当前域名:', window.location.hostname);
-  console.log('完整 URL:', window.location.href);
-  console.log('Turnstile 库状态:', window.turnstile ? '已加载' : '未加载');
-  console.log('Site Key:', import.meta.env.VITE_TURNSTILE_SITE_KEY);
 });
 
 // 处理验证成功
