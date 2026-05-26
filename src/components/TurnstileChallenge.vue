@@ -115,7 +115,18 @@ function renderWidget() {
       },
       'error-callback': (errorCode) => {
         console.error('Turnstile 验证错误:', errorCode)
-        emit('error', `验证错误 (代码: ${errorCode})`)
+        let errorMessage = `验证错误 (代码: ${errorCode})`
+        
+        if (errorCode === '300010') {
+          errorMessage = '域名配置错误：请在 Cloudflare Turnstile 控制台添加当前域名'
+          console.error('=== 300010 错误解决方案 ===')
+          console.error('1. 访问: https://dash.cloudflare.com/?to=/:account/turnstile')
+          console.error('2. 找到 Site Key:', sitekey)
+          console.error('3. 在域名设置中添加:', window.location.hostname)
+          console.error('4. 保存并等待 5-10 分钟生效')
+        }
+        
+        emit('error', errorMessage)
       },
       'expired-callback': () => {
         console.warn('Turnstile 验证已过期')
