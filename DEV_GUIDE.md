@@ -39,6 +39,61 @@ npm run preview
 
 ---
 
+## 🌐 生产环境 Turnstile 配置指南
+
+### 重要：域名配置问题
+
+如果您在生产环境中遇到以下错误：
+```
+Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://challenges.cloudflare.com') does not match the recipient window's origin ('https://your-domain.com')
+```
+
+这是因为 Cloudflare Turnstile 的域名配置不正确。
+
+### 解决步骤
+
+#### 1. 登录 Cloudflare Turnstile 控制台
+访问：https://dash.cloudflare.com/?to=/:account/turnstile
+
+#### 2. 找到您的 Site Key
+当前使用的 Site Key：`0x4AAAAAADTy6YTSxcziFVXR`
+
+#### 3. 添加域名到白名单
+在 Turnstile 控制台中：
+1. 点击您的 Site Key 设置
+2. 找到 "Domain" 或 "域名" 配置项
+3. 添加您的实际域名，例如：
+   - `swabox.cc.cd`
+   - `*.swabox.cc.cd` (支持所有子域名)
+   - `localhost` (开发环境)
+
+#### 4. 保存并等待生效
+配置更改通常需要 1-5 分钟生效。
+
+#### 5. 验证配置
+打开浏览器控制台，查看诊断信息：
+```javascript
+// 应该看到类似输出：
+=== Turnstile 诊断信息 ===
+当前域名: swabox.cc.cd
+完整 URL: https://swabox.cc.cd/
+Turnstile 库状态: 已加载
+Site Key: 0x4AAAAAADTy6YTSxcziFVXR
+```
+
+### 常见问题
+
+**Q: 为什么开发环境正常，生产环境报错？**
+A: 开发环境使用 localhost，而生产环境需要您在 Turnstile 控制台中配置实际域名。
+
+**Q: 配置后仍然报错怎么办？**
+A: 1. 清除浏览器缓存 2. 等待 5-10 分钟让配置生效 3. 检查域名拼写是否正确
+
+**Q: 支持多个域名吗？**
+A: 支持，在 Turnstile 控制台中可以添加多个域名，用逗号分隔。
+
+---
+
 ## ⏭️ 开发跳过验证功能
 
 ### 功能说明

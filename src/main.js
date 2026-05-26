@@ -23,7 +23,9 @@ app.config.errorHandler = (err, vm, info) => {
 window.addEventListener('error', (event) => {
   if (event.message.includes('postMessage') && event.message.includes('challenges.cloudflare.com')) {
     event.preventDefault();
-    console.warn('Turnstile postMessage 错误已忽略（开发环境常见）');
+    const currentDomain = window.location.hostname;
+    console.warn(`Turnstile postMessage 错误 - 当前域名: ${currentDomain}`);
+    console.warn('请检查 Cloudflare Turnstile 控制台中的域名配置');
   }
 });
 
