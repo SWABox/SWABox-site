@@ -93,6 +93,10 @@ function renderWidget() {
       'error-callback': (errorCode) => {
         emit('error', `验证错误 (代码: ${errorCode})`)
       },
+      'expired-callback': () => {
+        console.warn('Turnstile 验证已过期')
+        emit('error', '验证已过期，请重新验证')
+      },
     })
 
     isLoaded.value = true
@@ -119,12 +123,21 @@ onMounted(() => {
       setTimeout(checkAndRender, 100)
     }
   }
-  setTimeout(checkAndRender, 200)
+  
+  if (window.turnstile) {
+    renderWidget()
+  } else {
+    setTimeout(checkAndRender, 200)
+  }
 })
 
 onUnmounted(() => {
   if (widgetId && window.turnstile && window.turnstile.remove) {
-    window.turnstile.remove(widgetId)
+    try {
+      window.turnstile.remove(widgetId)
+    } catch (error) {
+      console.warn('清理 Turnstile 小部件时出错:', error)
+    }
   }
 })
 </script>
