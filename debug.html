@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>环境变量调试工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #38bdf8;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .test-section {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #334155;
+        }
+
+        .test-title {
+            color: #38bdf8;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .test-button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .test-button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .test-button:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+            display: none;
+        }
+
+        .result.success {
+            background: #064e3b;
+            border: 1px solid #059669;
+            color: #6ee7b7;
+        }
+
+        .result.error {
+            background: #7f1d1d;
+            border: 1px solid #dc2626;
+            color: #fca5a5;
+        }
+
+        .result.info {
+            background: #1e3a5f;
+            border: 1px solid #0ea5e9;
+            color: #7dd3fc;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-indicator.success {
+            background: #22c55e;
+        }
+
+        .status-indicator.error {
+            background: #ef4444;
+        }
+
+        .status-indicator.pending {
+            background: #f59e0b;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .instructions {
+            background: #334155;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+        }
+
+        .instructions h3 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 5px;
+        }
+
+        .code {
+            background: #0f172a;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 环境变量调试工具</h1>
+        <p class="subtitle">诊断 Cloudflare Pages 环境变量配置问题</p>
+
+        <div class="instructions">
+            <h3>📋 使用说明</h3>
+            <ol>
+                <li>依次点击下方的测试按钮</li>
+                <li>查看每个测试的结果</li>
+                <li>根据结果诊断配置问题</li>
+                <li>如有问题，查看下方的解决方案</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">
+                <span class="status-indicator pending" id="status1"></span>
+                测试 1: 检查环境变量配置
+            </div>
+            <button class="test-button" onclick="testDebugEnv()">运行调试测试</button>
+            <div class="result" id="result1"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">
+                <span class="status-indicator pending" id="status2"></span>
+                测试 2: 获取 Site Key
+            </div>
+            <button class="test-button" onclick="testGetSiteKey()">测试 Site Key API</button>
+            <div class="result" id="result2"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">
+                <span class="status-indicator pending" id="status3"></span>
+                测试 3: 验证 Turnstile 配置
+            </div>
+            <button class="test-button" onclick="testTurnstileConfig()">测试 Turnstile 配置</button>
+            <div class="result" id="result3"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">
+                <span class="status-indicator pending" id="status4"></span>
+                测试 4: 网络连接测试
+            </div>
+            <button class="test-button" onclick="testNetworkConnectivity()">测试网络连接</button>
+            <div class="result" id="result4"></div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">
+                <span class="status-indicator pending" id="status5"></span>
+                完整诊断报告
+            </div>
+            <button class="test-button" onclick="runFullDiagnosis()">运行完整诊断</button>
+            <div class="result" id="result5"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testDebugEnv() {
+            const statusEl = document.getElementById('status1');
+            const resultEl = document.getElementById('result1');
+            
+            statusEl.className = 'status-indicator pending';
+            resultEl.style.display = 'block';
+            resultEl.className = 'result info';
+            resultEl.textContent = '正在测试环境变量配置...';
+
+            try {
+                const response = await fetch('/api/debug-env');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    statusEl.className = 'status-indicator success';
+                    resultEl.className = 'result success';
+                    resultEl.textContent = '✅ 环境变量调试信息:\n\n' + JSON.stringify(data, null, 2);
+                    
+                    // 分析结果
+                    const analysis = analyzeEnvDebug(data);
+                    resultEl.textContent += '\n\n📊 分析结果:\n' + analysis;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                statusEl.className = 'status-indicator error';
+                resultEl.className = 'result error';
+                resultEl.textContent = '❌ 测试失败: ' + error.message;
+            }
+        }
+
+        async function testGetSiteKey() {
+            const statusEl = document.getElementById('status2');
+            const resultEl = document.getElementById('result2');
+            
+            statusEl.className = 'status-indicator pending';
+            resultEl.style.display = 'block';
+            resultEl.className = 'result info';
+            resultEl.textContent = '正在获取 Site Key...';
+
+            try {
+                const response = await fetch('/api/get-sitekey');
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    statusEl.className = 'status-indicator success';
+                    resultEl.className = 'result success';
+                    resultEl.textContent = '✅ 成功获取 Site Key:\n\n' + JSON.stringify(data, null, 2);
+                } else {
+                    statusEl.className = 'status-indicator error';
+                    resultEl.className = 'result error';
+                    resultEl.textContent = '❌ 获取 Site Key 失败:\n\n' + JSON.stringify(data, null, 2);
+                    
+                    if (data.debug) {
+                        resultEl.textContent += '\n\n🔍 调试信息:\n' + JSON.stringify(data.debug, null, 2);
+                    }
+                }
+            } catch (error) {
+                statusEl.className = 'status-indicator error';
+                resultEl.className = 'result error';
+                resultEl.textContent = '❌ 请求失败: ' + error.message;
+            }
+        }
+
+        async function testTurnstileConfig() {
+            const statusEl = document.getElementById('status3');
+            const resultEl = document.getElementById('result3');
+            
+            statusEl.className = 'status-indicator pending';
+            resultEl.style.display = 'block';
+            resultEl.className = 'result info';
+            resultEl.textContent = '正在测试 Turnstile 配置...';
+
+            const tests = {
+                'Turnstile 对象存在': typeof window.turnstile !== 'undefined',
+                'Turnstile 回调函数存在': typeof window.turnstileOnLoad === 'function',
+                '当前域名': window.location.hostname,
+                '当前协议': window.location.protocol,
+                '当前URL': window.location.href
+            };
+
+            statusEl.className = 'status-indicator success';
+            resultEl.className = 'result success';
+            resultEl.textContent = '✅ Turnstile 配置检查:\n\n' + JSON.stringify(tests, null, 2);
+        }
+
+        async function testNetworkConnectivity() {
+            const statusEl = document.getElementById('status4');
+            const resultEl = document.getElementById('result4');
+            
+            statusEl.className = 'status-indicator pending';
+            resultEl.style.display = 'block';
+            resultEl.className = 'result info';
+            resultEl.textContent = '正在测试网络连接...';
+
+            const tests = [];
+            
+            // 测试本地 API
+            try {
+                const localResponse = await fetch('/api/debug-env', { method: 'HEAD' });
+                tests.push({ name: '本地 API 连接', success: localResponse.ok, status: localResponse.status });
+            } catch (error) {
+                tests.push({ name: '本地 API 连接', success: false, error: error.message });
+            }
+
+            // 测试 Cloudflare Turnstile
+            try {
+                const turnstileResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/api.js', { method: 'HEAD' });
+                tests.push({ name: 'Cloudflare Turnstile', success: turnstileResponse.ok, status: turnstileResponse.status });
+            } catch (error) {
+                tests.push({ name: 'Cloudflare Turnstile', success: false, error: error.message });
+            }
+
+            // 测试 CDN
+            try {
+                const cdnResponse = await fetch('https://cdn.jsdelivr.net/npm/marked@9.1.0/marked.min.js', { method: 'HEAD' });
+                tests.push({ name: 'jsDelivr CDN', success: cdnResponse.ok, status: cdnResponse.status });
+            } catch (error) {
+                tests.push({ name: 'jsDelivr CDN', success: false, error: error.message });
+            }
+
+            const allSuccess = tests.every(test => test.success);
+            statusEl.className = allSuccess ? 'status-indicator success' : 'status-indicator error';
+            resultEl.className = allSuccess ? 'result success' : 'result error';
+            resultEl.textContent = (allSuccess ? '✅' : '❌') + ' 网络连接测试结果:\n\n' + JSON.stringify(tests, null, 2);
+        }
+
+        async function runFullDiagnosis() {
+            const statusEl = document.getElementById('status5');
+            const resultEl = document.getElementById('result5');
+            
+            statusEl.className = 'status-indicator pending';
+            resultEl.style.display = 'block';
+            resultEl.className = 'result info';
+            resultEl.textContent = '正在运行完整诊断...';
+
+            const report = {
+                timestamp: new Date().toISOString(),
+                browser: {
+                    userAgent: navigator.userAgent,
+                    language: navigator.language,
+                    platform: navigator.platform
+                },
+                page: {
+                    url: window.location.href,
+                    domain: window.location.hostname,
+                    protocol: window.location.protocol
+                },
+                tests: {}
+            };
+
+            // 运行所有测试
+            try {
+                // 测试 1: 环境变量
+                const envResponse = await fetch('/api/debug-env');
+                report.tests.environment = await envResponse.json();
+                report.tests.environmentStatus = envResponse.ok;
+
+                // 测试 2: Site Key
+                const siteKeyResponse = await fetch('/api/get-sitekey');
+                report.tests.siteKey = await siteKeyResponse.json();
+                report.tests.siteKeyStatus = siteKeyResponse.ok;
+
+                // 测试 3: Turnstile
+                report.tests.turnstile = {
+                    exists: typeof window.turnstile !== 'undefined',
+                    callbackExists: typeof window.turnstileOnLoad === 'function'
+                };
+
+                // 生成诊断结果
+                const diagnosis = generateDiagnosis(report);
+                
+                statusEl.className = diagnosis.success ? 'status-indicator success' : 'status-indicator error';
+                resultEl.className = diagnosis.success ? 'result success' : 'result error';
+                resultEl.textContent = diagnosis.message;
+
+            } catch (error) {
+                statusEl.className = 'status-indicator error';
+                resultEl.className = 'result error';
+                resultEl.textContent = '❌ 诊断失败: ' + error.message + '\n\n部分报告:\n' + JSON.stringify(report, null, 2);
+            }
+        }
+
+        function analyzeEnvDebug(data) {
+            let analysis = '';
+            
+            if (!data.environment.hasEnv) {
+                analysis += '❌ 环境对象不存在 - 这可能是 Cloudflare Pages 配置问题\n';
+            } else {
+                analysis += '✅ 环境对象存在\n';
+            }
+
+            if (!data.turnstileConfig.hasSiteKey) {
+                analysis += '❌ TURNSTILE_SITE_KEY 未设置 - 请在 Cloudflare Pages 中配置此环境变量\n';
+            } else {
+                analysis += '✅ TURNSTILE_SITE_KEY 已设置: ' + data.turnstileConfig.siteKeyPreview + '\n';
+            }
+
+            if (!data.turnstileConfig.hasSecretKey) {
+                analysis += '❌ TURNSTILE_SECRET_KEY 未设置 - 请在 Cloudflare Pages 中配置此环境变量\n';
+            } else {
+                analysis += '✅ TURNSTILE_SECRET_KEY 已设置\n';
+            }
+
+            if (!data.turnstileConfig.hasAllowedOrigins) {
+                analysis += '⚠️  ALLOWED_ORIGINS 未设置 - 建议配置此变量以提高安全性\n';
+            } else {
+                analysis += '✅ ALLOWED_ORIGINS 已设置: ' + data.turnstileConfig.allowedOrigins + '\n';
+            }
+
+            if (data.environment.envKeys.length === 0) {
+                analysis += '❌ 没有找到任何环境变量 - 请检查 Cloudflare Pages 配置\n';
+            } else {
+                analysis += '📋 可用的环境变量: ' + data.environment.envKeys.join(', ') + '\n';
+            }
+
+            return analysis;
+        }
+
+        function generateDiagnosis(report) {
+            let diagnosis = {
+                success: true,
+                issues: [],
+                recommendations: []
+            };
+
+            // 检查环境变量
+            if (!report.tests.environmentStatus) {
+                diagnosis.success = false;
+                diagnosis.issues.push('环境变量 API 请求失败');
+                diagnosis.recommendations.push('检查 Cloudflare Pages Functions 是否正确部署');
+            }
+
+            if (!report.tests.environment?.turnstileConfig?.hasSiteKey) {
+                diagnosis.success = false;
+                diagnosis.issues.push('TURNSTILE_SITE_KEY 环境变量未设置');
+                diagnosis.recommendations.push('在 Cloudflare Pages 项目设置中添加 TURNSTILE_SITE_KEY 环境变量');
+            }
+
+            if (!report.tests.environment?.turnstileConfig?.hasSecretKey) {
+                diagnosis.success = false;
+                diagnosis.issues.push('TURNSTILE_SECRET_KEY 环境变量未设置');
+                diagnosis.recommendations.push('在 Cloudflare Pages 项目设置中添加 TURNSTILE_SECRET_KEY 环境变量');
+            }
+
+            // 检查 Site Key API
+            if (!report.tests.siteKeyStatus) {
+                diagnosis.success = false;
+                diagnosis.issues.push('Site Key API 返回错误');
+            }
+
+            // 检查 Turnstile
+            if (!report.tests.turnstile?.exists) {
+                diagnosis.issues.push('Turnstile 库未加载');
+                diagnosis.recommendations.push('检查网络连接和 CSP 策略');
+            }
+
+            // 生成消息
+            let message = '📋 完整诊断报告\n\n';
+            message += '🔍 基本信息:\n';
+            message += `  时间: ${report.timestamp}\n`;
+            message += `  域名: ${report.page.domain}\n`;
+            message += `  URL: ${report.page.url}\n\n`;
+
+            if (diagnosis.issues.length > 0) {
+                message += '❌ 发现的问题:\n';
+                diagnosis.issues.forEach((issue, i) => {
+                    message += `  ${i + 1}. ${issue}\n`;
+                });
+                message += '\n';
+            }
+
+            if (diagnosis.recommendations.length > 0) {
+                message += '💡 建议的解决方案:\n';
+                diagnosis.recommendations.forEach((rec, i) => {
+                    message += `  ${i + 1}. ${rec}\n`;
+                });
+                message += '\n';
+            }
+
+            if (diagnosis.success) {
+                message += '✅ 所有测试通过！系统配置正常。\n';
+            } else {
+                message += '❌ 发现问题需要修复。\n';
+            }
+
+            message += '\n📄 详细数据:\n' + JSON.stringify(report, null, 2);
+
+            return {
+                success: diagnosis.success,
+                message: message
+            };
+        }
+
+        // 页面加载时自动运行基础检查
+        window.addEventListener('load', () => {
+            console.log('调试工具已加载');
+            setTimeout(() => {
+                console.log('建议运行完整诊断以查看系统状态');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
