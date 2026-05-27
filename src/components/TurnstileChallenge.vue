@@ -59,6 +59,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 const emit = defineEmits(['verified', 'error'])
 
 const sitekey = import.meta.env.VITE_TURNSTILE_SITE_KEY
+
 const isLoaded = ref(false)
 const isRefreshing = ref(false)
 const widgetContainer = ref(null)
@@ -69,17 +70,17 @@ function checkDomainConfiguration() {
   console.log('当前域名:', window.location.hostname)
   console.log('完整 URL:', window.location.href)
   console.log('Site Key:', sitekey)
-  
+
   const commonDomains = ['swabox.cc.cd', 'localhost', '127.0.0.1']
   const isKnownDomain = commonDomains.some(domain => window.location.hostname.includes(domain))
-  
+
   if (!isKnownDomain) {
     console.warn('⚠️ 检测到新域名，请确保在 Cloudflare Turnstile 控制台中添加此域名')
     console.warn('📋 需要添加的域名:', window.location.hostname)
   } else {
     console.log('✅ 域名在已知列表中')
   }
-  
+
   return isKnownDomain
 }
 
@@ -103,7 +104,7 @@ function renderWidget() {
   try {
     const currentDomain = window.location.hostname
     console.log('当前域名:', currentDomain)
-    
+
     widgetId = window.turnstile.render(widgetContainer.value, {
       sitekey: sitekey,
       theme: 'dark',
@@ -115,16 +116,16 @@ function renderWidget() {
       'error-callback': (errorCode) => {
         console.error('Turnstile 验证错误:', errorCode)
         let errorMessage = `验证错误 (代码: ${errorCode})`
-        
+
         if (errorCode === '300010') {
           errorMessage = '域名配置错误：请在 Cloudflare Turnstile 控制台添加当前域名'
           console.error('=== 300010 错误解决方案 ===')
           console.error('1. 访问: https://dash.cloudflare.com/?to=/:account/turnstile')
-          console.error('2. 找到 Site Key:', sitekey.value)
+          console.error('2. 找到 Site Key:', sitekey)
           console.error('3. 在域名设置中添加:', window.location.hostname)
           console.error('4. 保存并等待 5-10 分钟生效')
         }
-        
+
         emit('error', errorMessage)
       },
       'expired-callback': () => {
@@ -155,7 +156,7 @@ function handleRefresh() {
 
 onMounted(() => {
   checkDomainConfiguration()
-  
+
   const checkAndRender = () => {
     if (window.turnstile) {
       renderWidget()
@@ -163,7 +164,7 @@ onMounted(() => {
       setTimeout(checkAndRender, 100)
     }
   }
-  
+
   if (window.turnstile) {
     renderWidget()
   } else {
@@ -201,8 +202,8 @@ onUnmounted(() => {
   pointer-events: none;
   z-index: -1;
   background:
-    radial-gradient(ellipse 100% 80% at 20% 0%, rgba(34, 197, 94, 0.04) 0%, transparent 50%),
-    radial-gradient(ellipse 80% 60% at 80% 100%, rgba(34, 197, 94, 0.03) 0%, transparent 50%);
+      radial-gradient(ellipse 100% 80% at 20% 0%, rgba(34, 197, 94, 0.04) 0%, transparent 50%),
+      radial-gradient(ellipse 80% 60% at 80% 100%, rgba(34, 197, 94, 0.03) 0%, transparent 50%);
 }
 
 .challenge-page::after {
