@@ -4,17 +4,17 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/logo-nobg.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://cdn.jsdelivr.net https://code.iconify.design https://static.cloudflareinsights.com https://cloudflareinsights.com https://fonts.googleapis.com https://fonts.gstatic.com; frame-src 'self' https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com https://cloudflareinsights.com https://api.github.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:;">
-    <script>
-      window.turnstileOnLoad = function() {
-        console.log('Turnstile 库加载完成');
-      };
-    </script>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://cdn.jsdelivr.net https://code.iconify.design https://static.cloudflareinsights.com https://cloudflareinsights.com https://fonts.googleapis.com https://fonts.gstatic.com; frame-src 'self' https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com https://cloudflareinsights.com https://api.github.com;">
     <script
             src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=turnstileOnLoad"
             defer
             crossorigin="anonymous"
     ></script>
+    <script>
+      window.turnstileOnLoad = function() {
+        console.log('Turnstile 库加载完成');
+      };
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/marked@9.1.0/marked.min.js" crossorigin="anonymous"></script>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js" crossorigin="anonymous"></script>
     <title>swabox-site</title>
