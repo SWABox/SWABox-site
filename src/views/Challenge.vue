@@ -28,6 +28,23 @@ function generateSignature(data) {
 async function handleTurnstileSuccess(token) {
   console.log('🔄 接收到验证 Token，正在验证...');
 
+  const saved = localStorage.getItem('swabox_verified');
+  if (saved) {
+    try {
+      const { ts, valid, signature } = JSON.parse(saved);
+      if (verifySignature({ ts, valid }, signature)) {
+        const isExpired = Date.now() - ts > 24 * 60 * 60 * 1000;
+        if (valid && !isExpired) {
+          console.log('✅ 验证状态仍然有效（24小时内），无需重新验证');
+          router.push('/');
+          return;
+        }
+      }
+    } catch (error) {
+      console.error('验证状态检查失败:', error);
+    }
+  }
+
   if (import.meta.env.DEV) {
     if (import.meta.env.VITE_ENABLE_SECURITY === 'true') {
       console.log('🔒 开发环境强制安全验证模式');
