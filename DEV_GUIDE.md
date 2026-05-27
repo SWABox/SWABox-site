@@ -72,7 +72,7 @@ Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('htt
 
 #### 5. 验证配置
 打开浏览器控制台，查看诊断信息：
-```javascript
+```
 // 应该看到类似输出：
 === Turnstile 诊断信息 ===
 当前域名: swabox.cc.cd
@@ -256,31 +256,6 @@ VITE_TURNSTILE_SITE_KEY=your_prod_site_key_here
   --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
 }
 ```
-
-### 设计特点
-
-- 🎯 **《黑客与画家》风格** - 深灰 + 淡绿配色
-- 🎨 噪点背景效果
-- ⚡ 平滑的微交互动画
-- 📱 完全响应式设计
-- 🎭 不对称布局设计
-
-### 禁止事项
-
-根据设计规范，以下内容应该避免：
-
-- ❌ 紫色或靛蓝色渐变
-- ❌ 纯平背景色（必须有噪点或渐变）
-- ❌ 完美居中对齐
-- ❌ 等宽多栏（必须不对称）
-- ❌ 高深的专业名词和无意义空话
-- ❌ Lorem Ipsum 占位文本
-- ❌ 被动时态和长句
-- ❌ 默认 UI 组件库（必须深度定制）
-- ❌ Emoji 作为功能图标
-- ❌ 线性 ease-in-out 动画
-
----
 
 ## 📦 项目结构
 

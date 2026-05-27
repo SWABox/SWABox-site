@@ -1,6 +1,26 @@
 // 此文件是一个 Cloudflare Pages Function
 // 路径: /api/verify-turnstile
 
+export async function onRequestOptions(context) {
+    const { request, env } = context;
+    const origin = request.headers.get('Origin');
+    const allowedOrigins = env.ALLOWED_ORIGINS ? env.ALLOWED_ORIGINS.split(',') : ['https://swabox.cc.cd'];
+    const isAllowedOrigin = origin && allowedOrigins.some(allowed => origin.includes(allowed));
+
+    const headers = {
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Max-Age': '86400',
+    };
+
+    if (isAllowedOrigin) {
+        headers['Access-Control-Allow-Origin'] = origin;
+        headers['Access-Control-Allow-Credentials'] = 'true';
+    }
+
+    return new Response(null, { headers });
+}
+
 export async function onRequestPost(context) {
     // context.env 包含了环境变量
     const { request, env } = context;
@@ -56,7 +76,21 @@ export async function onRequestPost(context) {
 
         const data = await verifyResponse.json();
 
-        // 5. 返回结果给前端
+        const origin = request.headers.get('Origin');
+        const allowedOrigins = env.ALLOWED_ORIGINS ? env.ALLOWED_ORIGINS.split(',') : ['https://swabox.cc.cd'];
+        const isAllowedOrigin = origin && allowedOrigins.some(allowed => origin.includes(allowed));
+
+        const headers = {
+            'Content-Type': 'application/json',
+        };
+        
+        if (isAllowedOrigin) {
+            headers['Access-Control-Allow-Origin'] = origin;
+            headers['Access-Control-Allow-Credentials'] = 'true';
+            headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS';
+            headers['Access-Control-Allow-Headers'] = 'Content-Type';
+        }
+
         return new Response(
             JSON.stringify({
                 success: data.success,
@@ -65,12 +99,7 @@ export async function onRequestPost(context) {
                 'error-codes': data['error-codes'],
                 message: data.success ? '验证通过。' : '人机验证失败，请重试。',
             }),
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*', // 允许您的网站访问
-                },
-            }
+            { headers }
         );
 
     } catch (error) {

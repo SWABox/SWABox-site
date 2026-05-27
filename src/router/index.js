@@ -57,13 +57,16 @@ const router = createRouter({
 
 // 全局前置守卫
 router.beforeEach((to, from, next) => {
-  // 开发模式跳过验证（方便开发）
   if (import.meta.env.DEV) {
-    next();
-    return;
+    if (import.meta.env.VITE_ENABLE_SECURITY === 'true') {
+      console.log('🔒 开发环境：安全验证已强制启用');
+    } else {
+      console.warn('⚠️ 开发模式：安全验证已禁用');
+      next();
+      return;
+    }
   }
 
-  // 错误页面和验证页面不需要验证
   if (to.name === 'Error' || to.name === 'Challenge') {
     next();
     return;

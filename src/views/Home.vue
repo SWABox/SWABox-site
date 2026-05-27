@@ -44,17 +44,41 @@ const route = useRoute();
 // 验证状态
 const isHumanVerified = ref(false);
 
-// 组件挂载时检查本地存储的验证状态
+function generateSignature(data) {
+  const str = JSON.stringify(data);
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return hash.toString(16);
+}
+
+function verifySignature(data, signature) {
+  return generateSignature(data) === signature;
+}
+
 onMounted(() => {
   const saved = localStorage.getItem('swabox_verified');
   if (saved) {
-    const { ts, valid } = JSON.parse(saved);
-    // 检查验证是否在24小时内
-    const isExpired = Date.now() - ts > 24 * 60 * 60 * 1000;
-    if (valid && !isExpired) {
-      isHumanVerified.value = true;
-    } else {
-      localStorage.removeItem('swabox_verified'); // 清除过期记录
+    try {
+      const { ts, valid, signature } = JSON.parse(saved);
+      if (!verifySignature({ ts, valid }, signature)) {
+        console.warn('⚠️ 验证状态签名无效，可能被篡改');
+        localStorage.removeItem('swabox_verified');
+        return;
+      }
+      
+      const isExpired = Date.now() - ts > 24 * 60 * 60 * 1000;
+      if (valid && !isExpired) {
+        isHumanVerified.value = true;
+      } else {
+        localStorage.removeItem('swabox_verified');
+      }
+    } catch (error) {
+      console.error('验证状态解析失败:', error);
+      localStorage.removeItem('swabox_verified');
     }
   }
 });
@@ -75,14 +99,13 @@ async function handleTurnstileSuccess(token) {
 
     if (result.success) {
       console.log('✅ 验证成功！');
-      // 1. 更新状态
       isHumanVerified.value = true;
-      // 2. 存储验证状态（24小时有效）
-      localStorage.setItem('swabox_verified', JSON.stringify({
+      const verificationData = {
         valid: true,
         ts: Date.now(),
-      }));
-      // 3. 如果URL中有重定向参数，则跳转
+      };
+      verificationData.signature = generateSignature(verificationData);
+      localStorage.setItem('swabox_verified', JSON.stringify(verificationData));
       const redirect = route.query.redirect;
       if (redirect && typeof redirect === 'string') {
         router.push(redirect);

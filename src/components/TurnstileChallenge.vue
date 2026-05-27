@@ -58,18 +58,37 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 const emit = defineEmits(['verified', 'error'])
 
-const sitekey = import.meta.env.VITE_TURNSTILE_SITE_KEY
-
+const sitekey = ref(null)
 const isLoaded = ref(false)
 const isRefreshing = ref(false)
 const widgetContainer = ref(null)
 let widgetId = null
 
+async function fetchSiteKey() {
+  try {
+    const response = await fetch('/api/get-sitekey')
+    const result = await response.json()
+    
+    if (result.success && result.sitekey) {
+      sitekey.value = result.sitekey
+      return true
+    } else {
+      console.error('获取 Site Key 失败:', result.message)
+      emit('error', '验证系统配置错误')
+      return false
+    }
+  } catch (error) {
+    console.error('获取 Site Key 网络错误:', error)
+    emit('error', '无法连接到验证服务')
+    return false
+  }
+}
+
 function checkDomainConfiguration() {
   console.log('=== Turnstile 域名诊断 ===')
   console.log('当前域名:', window.location.hostname)
   console.log('完整 URL:', window.location.href)
-  console.log('Site Key:', sitekey)
+  console.log('Site Key:', sitekey.value)
   
   const commonDomains = ['swabox.cc.cd', 'localhost', '127.0.0.1']
   const isKnownDomain = commonDomains.some(domain => window.location.hostname.includes(domain))
@@ -85,7 +104,7 @@ function checkDomainConfiguration() {
 }
 
 function renderWidget() {
-  if (!sitekey) {
+  if (!sitekey.value) {
     console.error('Turnstile Site Key 未配置')
     emit('error', '验证系统配置错误')
     return
@@ -106,7 +125,7 @@ function renderWidget() {
     console.log('当前域名:', currentDomain)
     
     widgetId = window.turnstile.render(widgetContainer.value, {
-      sitekey: sitekey,
+      sitekey: sitekey.value,
       theme: 'dark',
       size: 'normal',
       callback: (token) => {
@@ -121,7 +140,7 @@ function renderWidget() {
           errorMessage = '域名配置错误：请在 Cloudflare Turnstile 控制台添加当前域名'
           console.error('=== 300010 错误解决方案 ===')
           console.error('1. 访问: https://dash.cloudflare.com/?to=/:account/turnstile')
-          console.error('2. 找到 Site Key:', sitekey)
+          console.error('2. 找到 Site Key:', sitekey.value)
           console.error('3. 在域名设置中添加:', window.location.hostname)
           console.error('4. 保存并等待 5-10 分钟生效')
         }
@@ -154,7 +173,10 @@ function handleRefresh() {
   setTimeout(() => { isRefreshing.value = false }, 800)
 }
 
-onMounted(() => {
+onMounted(async () => {
+  const keyFetched = await fetchSiteKey()
+  if (!keyFetched) return
+  
   checkDomainConfiguration()
   
   const checkAndRender = () => {
