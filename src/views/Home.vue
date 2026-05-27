@@ -104,7 +104,8 @@ async function handleTurnstileSuccess(token) {
         valid: true,
         ts: Date.now(),
       };
-      verificationData.signature = generateSignature(verificationData);
+      const signature = generateSignature(verificationData);
+      verificationData.signature = signature;
       localStorage.setItem('swabox_verified', JSON.stringify(verificationData));
       const redirect = route.query.redirect;
       if (redirect && typeof redirect === 'string') {
