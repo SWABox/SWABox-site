@@ -9,27 +9,17 @@ export default defineConfig({
         target: 'http://localhost:5173',
         changeOrigin: true,
         bypass: (req, res, options) => {
-          if (req.url.includes('/api/get-sitekey') && req.method === 'GET') {
-            console.log('开发模式：模拟获取 Site Key');
-            res.setHeader('Content-Type', 'application/json');
-            const devSiteKey = process.env.VITE_TURNSTILE_SITE_KEY || '0x4AAAAAADTy6YTSxcziFVXR';
-            res.end(JSON.stringify({ 
-              success: true, 
-              sitekey: devSiteKey 
-            }));
-            return true;
+        if (req.url.includes('/api/verify-turnstile') && req.method === 'POST') {
+          if (process.env.VITE_ENABLE_SECURITY === 'true') {
+            console.log('开发模式：强制安全验证，不模拟');
+            return false;
           }
-          if (req.url.includes('/api/verify-turnstile') && req.method === 'POST') {
-            if (process.env.VITE_ENABLE_SECURITY === 'true') {
-              console.log('开发模式：强制安全验证，不模拟');
-              return false;
-            }
-            console.log('开发模式：模拟验证成功');
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({ success: true, message: '开发模式模拟成功' }));
-            return true;
-          }
-        },
+          console.log('开发模式：模拟验证成功');
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ success: true, message: '开发模式模拟成功' }));
+          return true;
+        }
+      },
       },
     },
   },

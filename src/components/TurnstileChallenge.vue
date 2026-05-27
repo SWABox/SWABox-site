@@ -58,37 +58,17 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 const emit = defineEmits(['verified', 'error'])
 
-const sitekey = ref(null)
+const sitekey = import.meta.env.VITE_TURNSTILE_SITE_KEY
 const isLoaded = ref(false)
 const isRefreshing = ref(false)
 const widgetContainer = ref(null)
 let widgetId = null
 
-async function fetchSiteKey() {
-  try {
-    const response = await fetch('/api/get-sitekey')
-    const result = await response.json()
-    
-    if (result.success && result.sitekey) {
-      sitekey.value = result.sitekey
-      return true
-    } else {
-      console.error('获取 Site Key 失败:', result.message)
-      emit('error', '验证系统配置错误')
-      return false
-    }
-  } catch (error) {
-    console.error('获取 Site Key 网络错误:', error)
-    emit('error', '无法连接到验证服务')
-    return false
-  }
-}
-
 function checkDomainConfiguration() {
   console.log('=== Turnstile 域名诊断 ===')
   console.log('当前域名:', window.location.hostname)
   console.log('完整 URL:', window.location.href)
-  console.log('Site Key:', sitekey.value)
+  console.log('Site Key:', sitekey)
   
   const commonDomains = ['swabox.cc.cd', 'localhost', '127.0.0.1']
   const isKnownDomain = commonDomains.some(domain => window.location.hostname.includes(domain))
@@ -104,7 +84,7 @@ function checkDomainConfiguration() {
 }
 
 function renderWidget() {
-  if (!sitekey.value) {
+  if (!sitekey) {
     console.error('Turnstile Site Key 未配置')
     emit('error', '验证系统配置错误')
     return
@@ -125,7 +105,7 @@ function renderWidget() {
     console.log('当前域名:', currentDomain)
     
     widgetId = window.turnstile.render(widgetContainer.value, {
-      sitekey: sitekey.value,
+      sitekey: sitekey,
       theme: 'dark',
       size: 'normal',
       callback: (token) => {
@@ -173,10 +153,7 @@ function handleRefresh() {
   setTimeout(() => { isRefreshing.value = false }, 800)
 }
 
-onMounted(async () => {
-  const keyFetched = await fetchSiteKey()
-  if (!keyFetched) return
-  
+onMounted(() => {
   checkDomainConfiguration()
   
   const checkAndRender = () => {

@@ -1,19 +1,119 @@
 # Cloudflare Pages 环境变量配置
 
-在部署到 Cloudflare Pages 时，需要在项目设置中配置以下环境变量：
+本项目使用 Cloudflare Turnstile 进行人机验证，配置分为本地和云端两部分：
+
+## 📋 配置概述
+
+### 本地配置 (`.env` 文件)
+- **TURNSTILE_SITE_KEY**: 公钥，存储在本地 `.env` 文件中
+- **VITE_ENABLE_SECURITY**: 开发环境安全验证开关
+
+### Cloudflare Pages 配置 (环境变量)
+- **TURNSTILE_SECRET_KEY**: 私钥，在 Cloudflare Pages 中配置
+- **ALLOWED_ORIGINS**: 允许的域名列表
+
+## 🔑 密钥说明
+
+### Site Key (公钥)
+- **性质**: 公开密钥，可以安全地暴露在客户端代码中
+- **用途**: 前端初始化 Turnstile 验证组件
+- **存储位置**: 本地 `.env` 文件
+- **安全性**: 泄露不会造成安全风险
+
+### Secret Key (私钥)
+- **性质**: 私密密钥，必须保密
+- **用途**: 后端验证 Turnstile Token 的有效性
+- **存储位置**: Cloudflare Pages 环境变量
+- **安全性**: 永远不要提交到版本控制
+
+## ⚙️ 配置步骤
+
+### 本地开发配置
+
+1. 确保 `.env` 文件存在并包含：
+```env
+VITE_TURNSTILE_SITE_KEY=0x4AAAAAADTy6YTSxcziFVXR
+VITE_ENABLE_SECURITY=false
+```
+
+2. 启动开发服务器：
+```bash
+npm run dev
+```
+
+### Cloudflare Pages 配置
+
+1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)
+2. 进入 **Pages** > 选择你的项目
+3. 点击 **Settings** > **Environment variables**
+4. 添加以下环境变量：
+
+#### Production 环境
+```
+TURNSTILE_SECRET_KEY=你的_secret_key_这里
+ALLOWED_ORIGINS=https://swabox.cc.cd
+```
+
+#### Preview 环境（可选）
+```
+TURNSTILE_SECRET_KEY=你的_secret_key_这里
+ALLOWED_ORIGINS=https://swabox.cc.cd
+```
+
+## 🔧 获取密钥
+
+1. 访问 [Cloudflare Turnstile 控制台](https://dash.cloudflare.com/?to=/:account/turnstile)
+2. 创建或选择现有的 Site Key
+3. 复制 **Site Key** 到本地 `.env` 文件
+4. 复制 **Secret Key** 到 Cloudflare Pages 环境变量
+
+## 🚀 部署
+
+配置完成后，部署项目：
+
+```bash
+npm run build
+npm run deploy
+```
+
+或通过 Git 推送触发自动部署。
+
+## ✅ 验证配置
+
+1. 访问网站，检查 Turnstile 组件是否正常显示
+2. 完成人机验证，确认功能正常
+3. 查看浏览器控制台，确认无错误
+
+## 🛡️ 安全注意事项
+
+1. ✅ Site Key 可以安全地存储在代码库中
+2. ❌ Secret Key 必须存储在 Cloudflare Pages 环境变量中
+3. ❌ 永远不要将 Secret Key 提交到版本控制
+4. ✅ `.env` 文件已在 `.gitignore` 中
+5. ✅ 定期轮换 Secret Key
+
+## 🐛 故障排除
+
+### Turnstile 组件不显示
+- 检查本地 `.env` 文件中的 Site Key 是否正确
+- 确认域名在 Turnstile 控制台中已配置
+- 查看浏览器控制台的错误信息
+
+### 验证失败
+- 确认 Cloudflare Pages 中的 Secret Key 正确
+- 检查 ALLOWED_ORIGINS 配置
+- 查看 Cloudflare Pages 函数日志
+
+### 开发环境问题
+- 确认 `.env` 文件存在
+- 检查 `VITE_ENABLE_SECURITY` 设置
+- 重启开发服务器
+
+---
 
 ## 必需的环境变量
 
-### 1. TURNSTILE_SITE_KEY
-- **描述**: Cloudflare Turnstile Site Key（公钥）
-- **用途**: 前端初始化 Turnstile 验证组件
-- **获取方式**: 
-  1. 访问 [Cloudflare Turnstile 控制台](https://dash.cloudflare.com/?to=/:account/turnstile)
-  2. 创建或选择现有的 Site Key
-  3. 复制 Site Key 值
-- **示例值**: `0x4AAAAAADTy6YTSxcziFVXR`
-
-### 2. TURNSTILE_SECRET_KEY
+### 1. TURNSTILE_SECRET_KEY
 - **描述**: Cloudflare Turnstile Secret Key（私钥）
 - **用途**: 后端验证 Turnstile Token 的有效性
 - **获取方式**: 
