@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from 'vue'
 
 const titleText = ref('')
-const fullTitle = '编程语言是用来思考的'
+const fullTitle = '下载工具是需要方便的'
 const isTyping = ref(true)
 const showTitle = ref(false)
 
